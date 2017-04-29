@@ -6,8 +6,10 @@ package com.simmeringc.websitePoller.view;
 
 import com.simmeringc.websitePoller.model.Cache;
 import com.simmeringc.websitePoller.model.Node;
-import static com.simmeringc.websitePoller.common.URLify.buildURL;
-import static com.simmeringc.websitePoller.controller.PageRequester.getHTML;
+import static com.simmeringc.websitePoller.view.InputVerifier.verifyInput;
+import static com.simmeringc.websitePoller.controller.WebRequester.getHTML;
+import static com.simmeringc.websitePoller.view.SystemLog.systemLogHelp;
+import static com.simmeringc.websitePoller.view.SystemLog.systemLogHTMLGetSuccessful;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +22,13 @@ public class MainWindow {
 
     //swing references
     JFrame frame;
-    JLabel urlFormLabel, emailFormLabel;
+    JLabel urlFormLabel, emailFormLabel, changeThresholdFormLabel, pollIntervalFormLabel;
     JPanel inputPanel, logPanel, trackerPanel;
-    JTextField urlForm, emailForm;
-    JButton enterButton, helpButton;
+    JTextField urlForm, emailForm, changeThresholdForm, pollIntervalForm;
+    JButton enterButton, systemLogHelpButton;
     JScrollPane scroll;
 
-    //instantiate systemLog helper
+    //instantiate systemLog systemLogHelper
     SystemLog systemLog = new SystemLog();
 
     //instantiate cache model
@@ -59,36 +61,55 @@ public class MainWindow {
 
         //component: URL input form
         urlFormLabel = new JLabel("URL:");
-        urlForm = new JTextField(16);
+        urlForm = new JTextField(12);
         urlForm.addKeyListener(new FormListener());
 
         //component: email input form
-        emailFormLabel = new JLabel("email:");
-        emailForm = new JTextField(16);
+        emailFormLabel = new JLabel("Email:");
+        emailForm = new JTextField(12);
         emailForm.addKeyListener(new FormListener());
+
+        //component: change-threshold input form
+        changeThresholdFormLabel = new JLabel("Threshold (%):");
+        changeThresholdForm = new JTextField(2);
+        changeThresholdForm.addKeyListener(new FormListener());
+
+        //component: poll-interval input form
+        pollIntervalFormLabel = new JLabel("Interval (s):");
+        pollIntervalForm = new JTextField(2);
+        pollIntervalForm.addKeyListener(new FormListener());
 
         //component: enter button
         enterButton = new JButton("Enter");
         enterButton.addActionListener(new EnterButtonListener());
 
-        //component: help button
-        helpButton = new JButton("Help");
-        helpButton.addActionListener(new HelpButtonListener());
+        //component: systemLogHelp button
+        systemLogHelpButton = new JButton("systemLogHelp");
+        systemLogHelpButton.addActionListener(new systemLogHelpButtonListener());
 
         //append components to inputPanel
         inputPanel.add(urlFormLabel);
         inputPanel.add(urlForm);
         inputPanel.add(emailFormLabel);
         inputPanel.add(emailForm);
+        inputPanel.add(changeThresholdFormLabel);
+        inputPanel.add(changeThresholdForm);
+        inputPanel.add(pollIntervalFormLabel);
+        inputPanel.add(pollIntervalForm);
         inputPanel.add(enterButton);
-        inputPanel.add(helpButton);
+        inputPanel.add(systemLogHelpButton);
 
         //component: text-scroll box inheriting from systemLog
         scroll = new JScrollPane(systemLog.getSystemLogTextArea());
 
         //append components to logPanel - show tutorial
         logPanel.add(scroll);
-        systemLog.help();
+        systemLogHelp();
+
+        //trackerPanel parameters
+        trackerPanel.setPreferredSize(new Dimension(0, 400));
+        trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Websites being tracked: "));
+
 
         //append panels to frame - swing border layout
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
@@ -97,6 +118,11 @@ public class MainWindow {
         frame.setVisible(true);
     }
 
+    public void addTracker() {
+        
+    }
+
+    //inner class form listener on form fields allows user to hit the enter key to send input to the application
     class FormListener implements KeyListener {
         public void keyPressed(KeyEvent event) {
             if (event.getKeyCode()==KeyEvent.VK_ENTER){
@@ -111,26 +137,37 @@ public class MainWindow {
         }
     }
 
+    //inner class primary call to action
     class EnterButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            String url = buildURL(urlForm.getText());
+            String urlFromText = urlForm.getText();
+            String url = urlFromText;
+            String emailFormText = emailForm.getText();
+            String changeThresholdText = changeThresholdForm.getText();
+            String pollIntervalText = pollIntervalForm.getText();
             String html = null;
-            urlForm.setText(url);
+
             try {
-                html = getHTML(url);
-                systemLog.htmlGetSuccessful();
-            } catch (Exception e) {
-                e.printStackTrace();
+                verifyInput(urlFromText, emailFormText, changeThresholdText, pollIntervalText);
+                try {
+                    html = getHTML(url);
+                    systemLogHTMLGetSuccessful();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            Node page = new Node(url, html);
+
+            Node page = new Node(html);
             cache.put(url, page);
-            System.out.println(cache.getPageMap());
         }
     }
 
-    class HelpButtonListener implements ActionListener {
+    //inner class displays help intro message
+    class systemLogHelpButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            systemLog.help();
+            systemLogHelp();
         }
     }
 }
