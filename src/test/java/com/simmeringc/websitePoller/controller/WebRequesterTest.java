@@ -4,13 +4,13 @@
 
 package com.simmeringc.websitePoller.controller;
 
-import static com.simmeringc.websitePoller.controller.WebRequester.getHTML;
+import static com.simmeringc.websitePoller.controller.WebRequester.getHtml;
 import static org.junit.Assert.assertEquals;
 
 public class WebRequesterTest {
 
     @org.junit.Test
-    public void testGetHtml() throws Exception {
+    public void testgetHtml() throws Exception {
 
         String url = "http://example.org/";
 
@@ -62,6 +62,6 @@ public class WebRequesterTest {
                 " </body>\n" +
                 "</html>";
 
-        assertEquals(html, getHTML(url));
+        assertEquals(html, getHtml(url));
     }
 }

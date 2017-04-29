@@ -8,6 +8,18 @@
     <artifactId>website-poller</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.3</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+    </plugins>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
@@ -21,11 +33,11 @@
             <artifactId>jsoup</artifactId>
             <version>1.8.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.webjars/google-diff-match-patch -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
+            <groupId>org.webjars</groupId>
+            <artifactId>google-diff-match-patch</artifactId>
+            <version>20121119-1</version>
         </dependency>
     </dependencies>
 </project>

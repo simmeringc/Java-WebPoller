@@ -4,7 +4,7 @@
 
 package com.simmeringc.websitePoller.controller;
 
-import static com.simmeringc.websitePoller.view.SystemLog.systemLogHTMLGetFailed;
+import static com.simmeringc.websitePoller.view.SystemLog.systemLogHtmlGetFailed;
 
 import org.jsoup.*;
 
@@ -13,12 +13,12 @@ import org.jsoup.*;
 public class WebRequester {
     static String html = "";
 
-    public static String getHTML(String url) throws Exception {
+    public static String getHtml(String url) throws Exception {
         try {
             html = Jsoup.connect(url).get().html();
             System.out.println(html);
             if (html.toString().equals("")) {
-                systemLogHTMLGetFailed();
+                systemLogHtmlGetFailed(url);
             }
         }
         catch (Exception ex) {
