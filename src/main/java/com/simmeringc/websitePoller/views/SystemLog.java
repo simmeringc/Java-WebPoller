@@ -2,7 +2,7 @@
  * Created by Conner on 4/28/17.
  */
 
-package com.simmeringc.websitePoller.view;
+package com.simmeringc.websitePoller.views;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;

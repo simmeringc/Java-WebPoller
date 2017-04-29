@@ -2,9 +2,9 @@
  * Created by Conner on 4/28/17.
  */
 
-package com.simmeringc.websitePoller.controller;
+package com.simmeringc.websitePoller.controllers;
 
-import static com.simmeringc.websitePoller.controller.WebRequester.getHtml;
+import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
 import static org.junit.Assert.assertEquals;
 
 public class WebRequesterTest {

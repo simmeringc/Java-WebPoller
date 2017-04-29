@@ -2,7 +2,7 @@
  * Created by Conner on 4/28/17.
  */
 
-package com.simmeringc.websitePoller.model;
+package com.simmeringc.websitePoller.models;
 
 public class Node {
     private String data;

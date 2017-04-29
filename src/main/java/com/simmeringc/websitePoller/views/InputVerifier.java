@@ -2,9 +2,7 @@
  * Created by Conner on 4/28/17.
  */
 
-package com.simmeringc.websitePoller.view;
-
-import static com.simmeringc.websitePoller.view.SystemLog.*;
+package com.simmeringc.websitePoller.views;
 
 public class InputVerifier {
 

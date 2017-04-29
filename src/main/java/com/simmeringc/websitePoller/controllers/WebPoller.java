@@ -2,10 +2,10 @@
  * Created by Conner on 4/28/17.
  */
 
-package com.simmeringc.websitePoller.controller;
+package com.simmeringc.websitePoller.controllers;
 
-import static com.simmeringc.websitePoller.controller.WebRequester.getHtml;
-import static com.simmeringc.websitePoller.view.SystemLog.systemLogHtmlGetFailed;
+import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
+import static com.simmeringc.websitePoller.views.SystemLog.systemLogHtmlGetFailed;
 
 public class WebPoller implements Runnable {
     public String url;
@@ -22,7 +22,6 @@ public class WebPoller implements Runnable {
     public void run() {
         try {
             newHtml = getHtml(url);
-
         } catch (Exception ex) {
             systemLogHtmlGetFailed(url);
             ex.printStackTrace();

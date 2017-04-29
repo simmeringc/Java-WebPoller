@@ -2,14 +2,14 @@
  * Created by Conner on 4/28/17.
  */
 
-package com.simmeringc.websitePoller.view;
+package com.simmeringc.websitePoller.views;
 
-import com.simmeringc.websitePoller.controller.WebPoller;
-import com.simmeringc.websitePoller.model.Cache;
-import com.simmeringc.websitePoller.model.Node;
-import static com.simmeringc.websitePoller.view.InputVerifier.verifyInput;
-import static com.simmeringc.websitePoller.controller.WebRequester.getHtml;
-import static com.simmeringc.websitePoller.view.SystemLog.*;
+import com.simmeringc.websitePoller.controllers.WebPoller;
+import com.simmeringc.websitePoller.models.Cache;
+import com.simmeringc.websitePoller.models.Node;
+import static com.simmeringc.websitePoller.views.InputVerifier.verifyInput;
+import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
+import static com.simmeringc.websitePoller.views.SystemLog.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,10 +37,10 @@ public class MainWindow {
     public static int trackerNumber = 0;
 
     //instantiate systemLog systemLogHelper
-    SystemLog systemLog = new SystemLog();
+    public SystemLog systemLog = new SystemLog();
 
-    //instantiate cache model
-    Cache cache = new Cache();
+    //instantiate cache models
+    public Cache cache = new Cache();
 
     public static void main(String[] args) {
         //take the menu bar off the JFrame
@@ -239,7 +239,6 @@ public class MainWindow {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
             Node page = new Node(html);
             cache.put(url, page);
             addTrackerTile();
