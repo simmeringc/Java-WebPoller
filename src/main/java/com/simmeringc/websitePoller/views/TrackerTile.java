@@ -5,7 +5,7 @@
 package com.simmeringc.websitePoller.views;
 
 import com.simmeringc.websitePoller.controllers.WebPoller;
-
+import static com.simmeringc.websitePoller.views.SystemLog.systemLogDiffDetected;
 import static com.simmeringc.websitePoller.views.MainWindow.executerThreads;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogTerminateTracker;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningBrowser;
@@ -24,19 +24,22 @@ public class TrackerTile extends JPanel {
 
     private String url;
     private String email;
+    private String threshold;
     private int trackerNumber;
     private WebPoller poller;
 
     private JPanel trackerPanel, trackerTile;
-    private JButton urlButton, emailButton, thresholdText, intervalText, changePercentage, terminateButton;
+    private JButton urlButton, emailButton, thresholdText, intervalText, diffButton, terminateButton;
+    private JCheckBox enableEmailAlerts;
 
     public TrackerTile(WebPoller poller, JPanel trackerPanel, int trackerNumber, String url, String email, String threshold, String interval) {
-        this.poller = poller;
-        this.trackerPanel = trackerPanel;
-        this.trackerNumber = trackerNumber;
-        this.trackerTile = this;
         this.url = url;
         this.email = email;
+        this.threshold = threshold;
+        this.trackerNumber = trackerNumber;
+        this.poller = poller;
+        this.trackerPanel = trackerPanel;
+        this.trackerTile = this;
 
         new Timer((Integer.parseInt(interval) * 1000), taskPerformer).start();
 
@@ -82,7 +85,7 @@ public class TrackerTile extends JPanel {
         thresholdText.setBorderPainted(false);
         thresholdText.setOpaque(false);
         thresholdText.setBackground(Color.WHITE);
-        thresholdText.setToolTipText(threshold);
+        thresholdText.setToolTipText(threshold + " percent");
         c.gridx = 0;
         c.gridy = 2;
         add(thresholdText, c);
@@ -93,21 +96,21 @@ public class TrackerTile extends JPanel {
         intervalText.setBorderPainted(false);
         intervalText.setOpaque(false);
         intervalText.setBackground(Color.WHITE);
-        intervalText.setToolTipText(interval);
+        intervalText.setToolTipText(interval + " seconds");
         c.gridx = 0;
         c.gridy = 3;
         add(intervalText, c);
 
-        changePercentage = new JButton();
-        changePercentage.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + 0.00 + "%</U></FONT></HTML>");
-        changePercentage.setHorizontalAlignment(SwingConstants.LEFT);
-        changePercentage.setBorderPainted(false);
-        changePercentage.setOpaque(false);
-        changePercentage.setBackground(Color.WHITE);
-        changePercentage.setToolTipText(String.valueOf(poller.getPercentSimilarity()));
+        diffButton = new JButton();
+        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT>  (view)</HTML>");
+        diffButton.setHorizontalAlignment(SwingConstants.LEFT);
+        intervalText.setBorderPainted(false);
+        intervalText.setOpaque(false);
+        diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
+        diffButton.addActionListener(new DiffButtonListener());
         c.gridx = 2;
         c.gridy = 3;
-        add(changePercentage, c);
+        add(diffButton, c);
 
         terminateButton = new JButton();
         terminateButton.setText("Terminate");
@@ -120,17 +123,35 @@ public class TrackerTile extends JPanel {
         c.anchor = GridBagConstraints.FIRST_LINE_END;
         add(terminateButton, c);
 
-        ImageIcon pollingSpinner = new ImageIcon("src/main/java/com/simmeringc/websitePoller/resources/spinner.gif");
+        enableEmailAlerts = new JCheckBox("Enable Email Alerts");
+        enableEmailAlerts.setSelected(true);
+        enableEmailAlerts.setToolTipText(String.valueOf("check to enable email alerts"));
+        c.gridx = 1;
+        c.gridy = 3;
+        add(enableEmailAlerts, c);
+
+        ImageIcon pollingSpinner = new ImageIcon("src/main/resources/animations/spinner.gif");
         c.weightx = 0.0;
         c.gridx = 3;
         c.gridy = 3;
         add(new JLabel("Polling...", pollingSpinner, JLabel.CENTER), c);
     }
 
+    public boolean emailAlertsEnabled() {
+        return enableEmailAlerts.isSelected();
+    }
+
     //update percent diff every interval
     ActionListener taskPerformer = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
-            changePercentage.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT></HTML>");
+            if (poller.getPercentDiff() > poller.getThresholdPercent()) {
+                diffButton.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT>  (view)</HTML>");
+                diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
+                systemLogDiffDetected(url, threshold);
+            } else {
+                diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
+                diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT>  (view)</HTML>");
+            }
         }
     };
 
@@ -168,11 +189,19 @@ public class TrackerTile extends JPanel {
         }
     }
 
+    //inner-class: displays text diff in new pane | oldHtml -> newHtml
+    class DiffButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            new Thread(new DiffPane(url, poller.getOldHtml(), poller.getNewHtml())).start();
+        }
+    }
+
     //inner-class: terminates tracker-thread and removes TrackerTile
     class TerminateButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             executerThreads.get(trackerNumber).shutdown();
             trackerPanel.remove(trackerTile);
+            MainWindow.trackerNumber--;
             trackerPanel.repaint();
             systemLogTerminateTracker(url);
         }

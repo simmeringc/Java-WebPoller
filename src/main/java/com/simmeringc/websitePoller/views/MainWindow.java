@@ -22,10 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MainWindow {
 
+    //save first HTML get() from validation get()
     private String oldHtml;
 
     //website counter
-    private static int trackerNumber = 0;
+    public static int trackerNumber = 0;
 
     //keep track of threads that are executing runnable in WebPoller
     public static ArrayList<ScheduledExecutorService> executerThreads = new ArrayList<ScheduledExecutorService>();
@@ -49,7 +50,7 @@ public class MainWindow {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
 
         //set the name of the application menu item
-        System.setProperty("apple.awt.application.name", "SnapLogic Website WebPoller");
+        System.setProperty("apple.awt.application.name", "Simmeringc WebPoller");
 
         //build the GUI
         new MainWindow().buildGUI();
@@ -61,7 +62,7 @@ public class MainWindow {
         frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(809, 601);
-        frame.setTitle("SnapLogic Website WebPoller");
+        frame.setTitle("Simmeringc WebPoller");
         frame.setResizable(false);
 
         //create panel component containers
@@ -172,7 +173,7 @@ public class MainWindow {
     public WebPoller createPoller() {
         double thresholdPercent = Double.parseDouble(getThresholdFormText());
         long interval = Long.parseLong(getPollIntervalFormText());
-        WebPoller pollerRunnable = new WebPoller(getUrlFormText(), oldHtml, thresholdPercent);
+        WebPoller pollerRunnable = new WebPoller(getUrlFormText(), getEmailFormText(), oldHtml, thresholdPercent, trackerNumber);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executerThreads.add(executor);
@@ -193,6 +194,7 @@ public class MainWindow {
         trackerPanel.add(jSeparator);
         incrementTrackerPanelCounter();
         reDraw();
+        systemLogTrackerStarted(getUrlFormText());
     }
 
     //inner-class: form listener on form fields allows user to hit the enter key to send input to the application
@@ -213,18 +215,14 @@ public class MainWindow {
     //inner-class: primary call to action
     class EnterButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            String urlFromText = getUrlFormText();
-            String url = urlFromText;
-            String emailFormText = getEmailFormText();
-            String changeThresholdText = getThresholdFormText();
-            String pollIntervalText = getPollIntervalFormText();
+            String url = getUrlFormText();
 
             try {
-                verifyInput(urlFromText, emailFormText, changeThresholdText, pollIntervalText);
+                verifyInput(url, getEmailFormText(), getThresholdFormText(), getPollIntervalFormText());
                 try {
                     oldHtml = getHtml(url);
                     addTrackerTile();
-                    systemLogHtmlGetSuccessful();
+                    systemLogHtmlGetSuccessful(url);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
