@@ -18,13 +18,11 @@ to download dependencies and create a JAR in the '/target' folder.
 
 Maven should specify dependencies, classpaths and Java 1.8 to your IDE, if not, contact connersimmering@gmail.com.
 
-The application can be built and run in your IDE or from the generated JAR:
-
-'website-poller-development-jar-with-dependencies.jar'
+The application can be built and run in your IDE or from the generated JAR.
 
 ##Testing:
 
-Access the Menu Tool bar and enter your email to quickly test the applications features. See the PDF for a visual guide.
+Access the Menu Tool bar and enter your email to quickly test the applications features.
 
 ##HTML Filter Policy:
 
