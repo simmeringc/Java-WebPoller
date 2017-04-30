@@ -102,7 +102,7 @@ public class TrackerTile extends JPanel {
         add(intervalText, c);
 
         diffButton = new JButton();
-        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT>  (view)</HTML>");
+        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT> (view)</HTML>");
         diffButton.setHorizontalAlignment(SwingConstants.LEFT);
         intervalText.setBorderPainted(false);
         intervalText.setOpaque(false);
@@ -145,12 +145,12 @@ public class TrackerTile extends JPanel {
     ActionListener taskPerformer = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             if (poller.getPercentDiff() > poller.getThresholdPercent()) {
-                diffButton.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT>  (view)</HTML>");
+                diffButton.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT> (view)</HTML>");
                 diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
                 systemLogDiffDetected(url, threshold);
             } else {
                 diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
-                diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT>  (view)</HTML>");
+                diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT> (view)</HTML>");
             }
         }
     };

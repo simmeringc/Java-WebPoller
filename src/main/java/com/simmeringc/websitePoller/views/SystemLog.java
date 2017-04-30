@@ -75,7 +75,7 @@ public class SystemLog {
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogTerminateTracker(String url) {
-        String newMessage = timeStamp() + " -" + " Tracker for " + url + " termianted.";
+        String newMessage = timeStamp() + " -" + " Tracker for " + url + " terminated.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogEmailSent(String email) {

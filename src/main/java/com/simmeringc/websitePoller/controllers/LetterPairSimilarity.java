@@ -1,8 +1,6 @@
 /**
  * Created by Conner on 4/29/17.
  *
- * Similarity algorithm from Simon White: http://www.catalysoft.com/articles/StrikeAMatch.html
- *
  * computes the character pairs from the words of each of the two input strings,
  * then iterates through the ArrayLists to find the size of the intersection.
  */
