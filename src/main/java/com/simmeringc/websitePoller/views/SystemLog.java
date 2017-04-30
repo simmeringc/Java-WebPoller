@@ -31,15 +31,15 @@ public class SystemLog {
         return sdf.format(date);
     }
     public static void systemLogHelp() {
-        String line1 = "1. SnapLogic Website WebPoller: get email alerts when the content on a webpage changes";
+        String line1 = "1. SimmeringC WebPoller: get email alerts when the content on a webpage changes";
         String line2 = "2. Enter a URL and an email to be alerted upon a webpage change.";
         String line3 = "3. Set the change-threshold (percent) and poll-interval (seconds), then hit 'Enter'.";
         String line4 = "4. If the threshold is set to 10, an email will be sent when 10% of the wep page changes, etc.";
         String line5 = "5. The SnapLogic Website WebPoller will continue to poll websites every interval and send alerts until the app is closed.";
-        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5);
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
     }
-    public static void systemLogHtmlGetSuccessful() {
-        String newMessage = timeStamp() + " -" + " HTML get() successful.";
+    public static void systemLogHtmlGetSuccessful(String url) {
+        String newMessage = timeStamp() + " -" + " HTML get() successful on " + url + ", starting tracker...";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogHtmlGetFailed(String url) {
@@ -72,6 +72,26 @@ public class SystemLog {
     }
     public static void systemLogOpeningMailClient() {
         String newMessage = timeStamp() + " -" + " Opening mail client.";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogTerminateTracker(String url) {
+        String newMessage = timeStamp() + " -" + " Tracker for " + url + " termianted.";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogEmailSent(String email) {
+        String newMessage = timeStamp() + " -" + " Email sent to  " + email + " **********";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogEmailFailed(String email) {
+        String newMessage = timeStamp() + " -" + " Email to " + email + " FAILED to send.";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogDiffDetected(String url, String threshold) {
+        String newMessage = timeStamp() + " - " + threshold + " diff detechted at: " + url;
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogTrackerStarted(String url) {
+        String newMessage = timeStamp() + " - " + " New tracker polling " + url + ".";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
 }
