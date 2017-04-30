@@ -102,10 +102,11 @@ public class TrackerTile extends JPanel {
         add(intervalText, c);
 
         diffButton = new JButton();
-        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT> (view)</HTML>");
+        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT>  (view)</HTML>");
         diffButton.setHorizontalAlignment(SwingConstants.LEFT);
-        intervalText.setBorderPainted(false);
-        intervalText.setOpaque(false);
+        diffButton.setBorderPainted(true);
+        diffButton.setOpaque(true);
+        diffButton.setBackground(Color.WHITE);
         diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
         diffButton.addActionListener(new DiffButtonListener());
         c.gridx = 2;
@@ -114,6 +115,8 @@ public class TrackerTile extends JPanel {
 
         terminateButton = new JButton();
         terminateButton.setText("Terminate");
+        terminateButton.setBorderPainted(true);
+        terminateButton.setOpaque(true);
         terminateButton.setBackground(Color.WHITE);
         terminateButton.setToolTipText(String.valueOf("end this tracker"));
         terminateButton.addActionListener(new TerminateButtonListener());
@@ -130,7 +133,7 @@ public class TrackerTile extends JPanel {
         c.gridy = 3;
         add(enableEmailAlerts, c);
 
-        ImageIcon pollingSpinner = new ImageIcon("src/main/resources/animations/spinner.gif");
+        ImageIcon pollingSpinner = new ImageIcon(TrackerTile.class.getResource("/animations/spinner.jpg"));
         c.weightx = 0.0;
         c.gridx = 3;
         c.gridy = 3;
