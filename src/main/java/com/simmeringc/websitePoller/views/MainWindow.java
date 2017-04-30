@@ -125,11 +125,12 @@ public class MainWindow {
         logPanel.add(systemLogPanel);
         systemLogHelp();
 
-        //tesing
+       /** tesing block
         urlForm.setText("https://www.google.com");
         emailForm.setText("connersimmering@gmail.com");
         thresholdForm.setText("10");
         pollIntervalForm.setText("10");
+        **/
 
         //append panels to frame
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
