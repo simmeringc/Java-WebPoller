@@ -7,6 +7,7 @@ package com.simmeringc.websitePoller.views;
 import com.simmeringc.websitePoller.controllers.WebPoller;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogDiffDetected;
 import static com.simmeringc.websitePoller.views.MainWindow.executerThreads;
+import static com.simmeringc.websitePoller.views.MainWindow.getImage;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogTerminateTracker;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningBrowser;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningMailClient;
@@ -104,9 +105,6 @@ public class TrackerTile extends JPanel {
         diffButton = new JButton();
         diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT>  (view)</HTML>");
         diffButton.setHorizontalAlignment(SwingConstants.LEFT);
-        diffButton.setBorderPainted(true);
-        diffButton.setOpaque(true);
-        diffButton.setBackground(Color.WHITE);
         diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
         diffButton.addActionListener(new DiffButtonListener());
         c.gridx = 2;
@@ -115,9 +113,6 @@ public class TrackerTile extends JPanel {
 
         terminateButton = new JButton();
         terminateButton.setText("Terminate");
-        terminateButton.setBorderPainted(true);
-        terminateButton.setOpaque(true);
-        terminateButton.setBackground(Color.WHITE);
         terminateButton.setToolTipText(String.valueOf("end this tracker"));
         terminateButton.addActionListener(new TerminateButtonListener());
         c.gridx = 3;
@@ -133,7 +128,7 @@ public class TrackerTile extends JPanel {
         c.gridy = 3;
         add(enableEmailAlerts, c);
 
-        ImageIcon pollingSpinner = new ImageIcon(TrackerTile.class.getResource("/animations/spinner.jpg"));
+        ImageIcon pollingSpinner = new ImageIcon(getImage("animations/spinner.gif"));
         c.weightx = 0.0;
         c.gridx = 3;
         c.gridy = 3;

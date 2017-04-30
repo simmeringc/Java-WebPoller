@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -125,12 +126,12 @@ public class MainWindow {
         logPanel.add(systemLogPanel);
         systemLogHelp();
 
-       /** tesing block
+       // tesing block
         urlForm.setText("https://www.google.com");
         emailForm.setText("connersimmering@gmail.com");
         thresholdForm.setText("10");
         pollIntervalForm.setText("10");
-        **/
+
 
         //append panels to frame
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
@@ -196,6 +197,11 @@ public class MainWindow {
         incrementTrackerPanelCounter();
         reDraw();
         systemLogTrackerStarted(getUrlFormText());
+    }
+
+    public static Image getImage(final String pathAndFileName) {
+        final URL url = Thread.currentThread().getContextClassLoader().getResource(pathAndFileName);
+        return Toolkit.getDefaultToolkit().getImage(url);
     }
 
     //inner-class: form listener on form fields allows user to hit the enter key to send input to the application
