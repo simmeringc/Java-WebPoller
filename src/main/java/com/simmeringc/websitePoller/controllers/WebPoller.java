@@ -4,6 +4,7 @@
 
 package com.simmeringc.websitePoller.controllers;
 
+import com.simmeringc.websitePoller.views.MainWindow;
 import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
 import static com.simmeringc.websitePoller.controllers.LetterPairSimilarity.compareStrings;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogHtmlGetFailed;

@@ -15,8 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.net.URI;
-import java.awt.Desktop; //flagged for old API usage
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,23 +23,23 @@ import java.util.concurrent.TimeUnit;
 public class MainWindow {
 
     //swing scope references
-    JFrame frame;
-    JLabel urlFormLabel, emailFormLabel, thresholdFormLabel, pollIntervalFormLabel;
-    JPanel inputPanel, logPanel, trackerPanel, trackerTile;
-    JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
-    JButton enterButton, helpButton;
-    JScrollPane systemLogPanel, trackerScrollContainer;
-    String oldHtml;
+    private JFrame frame;
+    private JLabel urlFormLabel, emailFormLabel, thresholdFormLabel, pollIntervalFormLabel;
+    private JPanel inputPanel, logPanel, trackerPanel;
+    private JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
+    private JButton enterButton, helpButton;
+    private JScrollPane systemLogPanel, trackerScrollContainer;
+    private String oldHtml;
 
     //website counter
-    public static int trackerNumber = 0;
+    private static int trackerNumber = 0;
 
     //keep track of trackers
     public static ArrayList<JPanel> trackerTileList = new ArrayList<JPanel>();
     public static ArrayList<WebPoller> webPollerList = new ArrayList<WebPoller>();
 
     //instantiate systemLog systemLogHelper
-    public SystemLog systemLog = new SystemLog();
+    private SystemLog systemLog = new SystemLog();
 
     public static void main(String[] args) {
         //take the menu bar off the JFrame
@@ -70,7 +68,7 @@ public class MainWindow {
         //trackerPanel holds trackerTiles inside the trackerScrollContainer panel
         trackerPanel = new JPanel();
         trackerPanel.setLayout(new BoxLayout(trackerPanel, BoxLayout.Y_AXIS));
-        trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Websites being tracked: " + 0 + " "));
+        trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Tracking " + 0 + " websites"));
         trackerScrollContainer = new JScrollPane(trackerPanel);
         trackerScrollContainer.setPreferredSize(new Dimension(500, 400));
         trackerScrollContainer.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -136,6 +134,27 @@ public class MainWindow {
         frame.setVisible(true);
     }
 
+    public void reDraw() {
+        frame.validate();
+        frame.repaint();
+    }
+
+    public String getUrlFormText() {
+        return urlForm.getText();
+    }
+
+    public String getEmailFormText() {
+        return emailForm.getText();
+    }
+
+    public String getThresholdFormText() {
+        return thresholdForm.getText();
+    }
+
+    public String getPollIntervalFormText() {
+        return pollIntervalForm.getText();
+    }
+
     //trackerScrollContainer counter redraw
     public void incrementTrackerPanelCounter() {
         trackerNumber++;
@@ -144,10 +163,10 @@ public class MainWindow {
 
     //create new thread for intervaled content analysis
     public void createPoller() {
-        double thresholdPercent = Double.parseDouble(thresholdForm.getText());
-        long interval = Long.parseLong(pollIntervalForm.getText());
+        double thresholdPercent = Double.parseDouble(getThresholdFormText());
+        long interval = Long.parseLong(getPollIntervalFormText());
 
-        WebPoller pollerRunnable = new WebPoller(urlForm.getText(), oldHtml, trackerNumber, thresholdPercent);
+        WebPoller pollerRunnable = new WebPoller(getUrlFormText(), oldHtml, trackerNumber, thresholdPercent);
         webPollerList.add(pollerRunnable);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -157,89 +176,15 @@ public class MainWindow {
     //method: called from EnterButtonListener to create and append TrackerTile to TrackerPanel in GUI
     public void addTrackerTile() {
         createPoller();
-
-        trackerTile = new JPanel();
-        trackerTile.setLayout(new GridBagLayout());
-        trackerTile.setPreferredSize(new Dimension(760, 90));
-        trackerTile.setMaximumSize(new Dimension(760, 90));
-        trackerTile.setMinimumSize(new Dimension(760, 90));
-        trackerTile.setBorder(BorderFactory.createEtchedBorder());
-        trackerTile.setBackground(Color.LIGHT_GRAY);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weighty = 0.1;
-        c.weightx = 0.5;
-
-        JButton urlButton = new JButton();
-        urlButton.setText("<HTML>URL: <FONT color=\"#000099\"><U>"+ urlForm.getText() +"</U></FONT></HTML>");
-        urlButton.setHorizontalAlignment(SwingConstants.LEFT);
-        urlButton.setBorderPainted(false);
-        urlButton.setOpaque(false);
-        urlButton.setBackground(Color.WHITE);
-        urlButton.addActionListener(new UrlButtonListener());
-        c.gridx = 0;
-        c.gridy = 0;
-        trackerTile.add(urlButton, c);
-
-        JButton emailButton = new JButton();
-        emailButton.setText("<HTML>Email: <FONT color=\"#000099\"><U>"+ emailForm.getText() +"</U></FONT></HTML>");
-        emailButton.setHorizontalAlignment(SwingConstants.LEFT);
-        emailButton.setBorderPainted(false);
-        emailButton.setOpaque(false);
-        emailButton.setBackground(Color.WHITE);
-        emailButton.addActionListener(new EmailButtonListener());
-        c.gridx = 0;
-        c.gridy = 1;
-        trackerTile.add(emailButton, c);
-
-        JButton thresholdText = new JButton();
-        thresholdText.setText("<HTML>Threshold: <U>"+ thresholdForm.getText() +"</U></FONT></HTML>");
-        thresholdText.setHorizontalAlignment(SwingConstants.LEFT);
-        thresholdText.setBorderPainted(false);
-        thresholdText.setOpaque(false);
-        thresholdText.setBackground(Color.WHITE);
-        c.gridx = 0;
-        c.gridy = 2;
-        trackerTile.add(thresholdText, c);
-
-        JButton intervalText = new JButton();
-        intervalText.setText("<HTML>Interval: <U>"+ pollIntervalForm.getText() +"</U></FONT></HTML>");
-        intervalText.setHorizontalAlignment(SwingConstants.LEFT);
-        intervalText.setBorderPainted(false);
-        intervalText.setOpaque(false);
-        intervalText.setBackground(Color.WHITE);
-        c.gridx = 0;
-        c.gridy = 3;
-        trackerTile.add(intervalText, c);
-
-        JButton changePercentage = new JButton();
-        changePercentage.setText("<HTML>Interval: <U>"+ webPollerList.get(trackerNumber).getPercentDiff() +"</U></FONT></HTML>");
-        changePercentage.setHorizontalAlignment(SwingConstants.LEFT);
-        changePercentage.setBorderPainted(false);
-        changePercentage.setOpaque(false);
-        changePercentage.setBackground(Color.WHITE);
-        c.gridx = 0;
-        c.gridy = 3;
-        trackerTile.add(intervalText, c);
-
-        ImageIcon pollingSpinner = new ImageIcon("src/main/java/com/simmeringc/websitePoller/resources/spinner.gif");
-        c.weightx = 0.0;
-        c.gridx = 3;
-        c.gridy = 3;
-        trackerTile.add(new JLabel("Polling...", pollingSpinner, JLabel.CENTER), c);
-
+        TrackerTile trackerTile = new TrackerTile(getUrlFormText(), getEmailFormText(), getThresholdFormText(), getPollIntervalFormText(), trackerNumber);
         JSeparator jSeparator = new JSeparator();
         jSeparator.setMaximumSize(new Dimension(5, 5));
         jSeparator.setMinimumSize(new Dimension(5, 5));
-
         trackerTileList.add(trackerTile);
         trackerPanel.add(trackerTile);
         trackerPanel.add(jSeparator);
         incrementTrackerPanelCounter();
-
-        frame.validate();
-        frame.repaint();
+        reDraw();
     }
 
     //inner-class: form listener on form fields allows user to hit the enter key to send input to the application
@@ -260,11 +205,11 @@ public class MainWindow {
     //inner-class: primary call to action
     class EnterButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            String urlFromText = urlForm.getText();
+            String urlFromText = getUrlFormText();
             String url = urlFromText;
-            String emailFormText = emailForm.getText();
-            String changeThresholdText = thresholdForm.getText();
-            String pollIntervalText = pollIntervalForm.getText();
+            String emailFormText = getEmailFormText();
+            String changeThresholdText = getThresholdFormText();
+            String pollIntervalText = getPollIntervalFormText();
 
             try {
                 verifyInput(urlFromText, emailFormText, changeThresholdText, pollIntervalText);
@@ -285,40 +230,6 @@ public class MainWindow {
     class SystemLogHelpButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             systemLogHelp();
-        }
-    }
-
-    //inner-class: opens webpage for TrackerTile URL
-    class UrlButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            //flagged for old API usage
-            if(Desktop.isDesktopSupported())
-            {
-                try {
-                    Desktop.getDesktop().browse(new URI(urlForm.getText()));
-                    systemLogOpeningBrowser();
-                } catch (Exception ex) {
-                    systemLogUriFailed();
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
-
-    //inner-class: opens webpage for TrackerTile email
-    class EmailButtonListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            //flagged for old API usage
-            if(Desktop.isDesktopSupported())
-            {
-                try {
-                    Desktop.getDesktop().mail(new URI("mailto:" + emailForm.getText()));
-                    systemLogOpeningMailClient();
-                } catch (Exception ex) {
-                    systemLogUriFailed();
-                    ex.printStackTrace();
-                }
-            }
         }
     }
 }
