@@ -37,7 +37,8 @@ public class MainWindow {
     public static int trackerNumber = 0;
 
     //keep track of trackers
-    public static ArrayList trackerTileList = new ArrayList();
+    public static ArrayList<JPanel> trackerTileList = new ArrayList<JPanel>();
+    public static ArrayList<WebPoller> webPollerList = new ArrayList<WebPoller>();
 
     //instantiate systemLog systemLogHelper
     public SystemLog systemLog = new SystemLog();
@@ -122,6 +123,12 @@ public class MainWindow {
         logPanel.add(systemLogPanel);
         systemLogHelp();
 
+        //tesing
+        urlForm.setText("http://www.simmeringc.com");
+        emailForm.setText("connersimmering@gmail.com");
+        thresholdForm.setText("10");
+        pollIntervalForm.setText("10");
+
         //append panels to frame
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
         frame.getContentPane().add(BorderLayout.CENTER, logPanel);
@@ -141,23 +148,28 @@ public class MainWindow {
         long interval = Long.parseLong(pollIntervalForm.getText());
 
         WebPoller pollerRunnable = new WebPoller(urlForm.getText(), oldHtml, trackerNumber, thresholdPercent);
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        webPollerList.add(pollerRunnable);
 
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(pollerRunnable, 0, interval, TimeUnit.SECONDS);
     }
 
     //method: called from EnterButtonListener to create and append TrackerTile to TrackerPanel in GUI
     public void addTrackerTile() {
         createPoller();
-        incrementTrackerPanelCounter();
 
         trackerTile = new JPanel();
-        trackerTile.setLayout(new GridLayout(4,4));
+        trackerTile.setLayout(new GridBagLayout());
         trackerTile.setPreferredSize(new Dimension(760, 90));
         trackerTile.setMaximumSize(new Dimension(760, 90));
         trackerTile.setMinimumSize(new Dimension(760, 90));
         trackerTile.setBorder(BorderFactory.createEtchedBorder());
         trackerTile.setBackground(Color.LIGHT_GRAY);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0.1;
+        c.weightx = 0.5;
 
         JButton urlButton = new JButton();
         urlButton.setText("<HTML>URL: <FONT color=\"#000099\"><U>"+ urlForm.getText() +"</U></FONT></HTML>");
@@ -166,6 +178,9 @@ public class MainWindow {
         urlButton.setOpaque(false);
         urlButton.setBackground(Color.WHITE);
         urlButton.addActionListener(new UrlButtonListener());
+        c.gridx = 0;
+        c.gridy = 0;
+        trackerTile.add(urlButton, c);
 
         JButton emailButton = new JButton();
         emailButton.setText("<HTML>Email: <FONT color=\"#000099\"><U>"+ emailForm.getText() +"</U></FONT></HTML>");
@@ -174,6 +189,9 @@ public class MainWindow {
         emailButton.setOpaque(false);
         emailButton.setBackground(Color.WHITE);
         emailButton.addActionListener(new EmailButtonListener());
+        c.gridx = 0;
+        c.gridy = 1;
+        trackerTile.add(emailButton, c);
 
         JButton thresholdText = new JButton();
         thresholdText.setText("<HTML>Threshold: <U>"+ thresholdForm.getText() +"</U></FONT></HTML>");
@@ -181,6 +199,9 @@ public class MainWindow {
         thresholdText.setBorderPainted(false);
         thresholdText.setOpaque(false);
         thresholdText.setBackground(Color.WHITE);
+        c.gridx = 0;
+        c.gridy = 2;
+        trackerTile.add(thresholdText, c);
 
         JButton intervalText = new JButton();
         intervalText.setText("<HTML>Interval: <U>"+ pollIntervalForm.getText() +"</U></FONT></HTML>");
@@ -188,13 +209,25 @@ public class MainWindow {
         intervalText.setBorderPainted(false);
         intervalText.setOpaque(false);
         intervalText.setBackground(Color.WHITE);
+        c.gridx = 0;
+        c.gridy = 3;
+        trackerTile.add(intervalText, c);
 
-        ImageIcon pollingSpinner = new ImageIcon("ajax-loader.gif");
+        JButton changePercentage = new JButton();
+        changePercentage.setText("<HTML>Interval: <U>"+ webPollerList.get(trackerNumber).getPercentDiff() +"</U></FONT></HTML>");
+        changePercentage.setHorizontalAlignment(SwingConstants.LEFT);
+        changePercentage.setBorderPainted(false);
+        changePercentage.setOpaque(false);
+        changePercentage.setBackground(Color.WHITE);
+        c.gridx = 0;
+        c.gridy = 3;
+        trackerTile.add(intervalText, c);
 
-        trackerTile.add(urlButton);
-        trackerTile.add(emailButton);
-        trackerTile.add(thresholdText);
-        trackerTile.add(intervalText);
+        ImageIcon pollingSpinner = new ImageIcon("src/main/java/com/simmeringc/websitePoller/resources/spinner.gif");
+        c.weightx = 0.0;
+        c.gridx = 3;
+        c.gridy = 3;
+        trackerTile.add(new JLabel("Polling...", pollingSpinner, JLabel.CENTER), c);
 
         JSeparator jSeparator = new JSeparator();
         jSeparator.setMaximumSize(new Dimension(5, 5));
@@ -203,6 +236,7 @@ public class MainWindow {
         trackerTileList.add(trackerTile);
         trackerPanel.add(trackerTile);
         trackerPanel.add(jSeparator);
+        incrementTrackerPanelCounter();
 
         frame.validate();
         frame.repaint();

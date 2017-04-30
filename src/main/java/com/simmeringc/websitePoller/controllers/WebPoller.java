@@ -9,12 +9,12 @@ import static com.simmeringc.websitePoller.controllers.LetterPairSimilarity.comp
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogHtmlGetFailed;
 
 public class WebPoller implements Runnable {
-    public String url;
-    public String oldHtml;
-    public String newHtml;
-    public int trackerNumber;
-    public double thresholdPercent;
-    public double percentDiff;
+    private String url;
+    private String oldHtml;
+    private String newHtml;
+    private int trackerNumber;
+    private double thresholdPercent;
+    private double percentDiff;
 
     public WebPoller(String url, String oldHtml, int trackerNumber, double thresholdPercent) {
         this.url = url;
@@ -32,6 +32,9 @@ public class WebPoller implements Runnable {
             systemLogHtmlGetFailed(url);
             ex.printStackTrace();
         }
+    }
 
+    public double getPercentDiff() {
+        return percentDiff;
     }
 }

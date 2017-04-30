@@ -12,7 +12,6 @@ package com.simmeringc.websitePoller.controllers;
 import java.util.ArrayList;
 
 public class LetterPairSimilarity {
-
     //return an array of adjacent char pairs contained in the input string | input="snap" output=[sn,na,ap]
     private static ArrayList letterPairs(String str) {
         int numPairs = str.length()-1;
