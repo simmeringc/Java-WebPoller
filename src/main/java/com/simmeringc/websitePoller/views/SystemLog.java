@@ -36,7 +36,7 @@ public class SystemLog {
         String line3 = "3. Set the change-threshold (percent) and poll-interval (seconds), then hit 'Enter'.";
         String line4 = "4. If the threshold is set to 10, an email will be sent when 10% of the wep page changes, etc.";
         String line5 = "5. The SnapLogic Website WebPoller will continue to poll websites every interval and send alerts until the app is closed.";
-        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5);
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
     }
     public static void systemLogHtmlGetSuccessful() {
         String newMessage = timeStamp() + " -" + " HTML get() successful.";
@@ -72,6 +72,10 @@ public class SystemLog {
     }
     public static void systemLogOpeningMailClient() {
         String newMessage = timeStamp() + " -" + " Opening mail client.";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogTerminateTracker(String url) {
+        String newMessage = timeStamp() + " -" + " Tracker for " + url + " termianted.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
 }

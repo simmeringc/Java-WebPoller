@@ -4,9 +4,14 @@
 
 package com.simmeringc.websitePoller.views;
 
+import com.simmeringc.websitePoller.controllers.WebPoller;
+
+import static com.simmeringc.websitePoller.views.MainWindow.executerThreads;
+import static com.simmeringc.websitePoller.views.SystemLog.systemLogTerminateTracker;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningBrowser;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningMailClient;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogUriFailed;
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,18 +20,25 @@ import java.awt.event.ActionListener;
 import java.net.URI;
 import java.awt.Desktop; //flagged for old API usage
 
-public class TrackerTile extends JPanel implements ActionListener {
+public class TrackerTile extends JPanel {
 
     private String url;
     private String email;
     private int trackerNumber;
-    private Timer timer;
+    private WebPoller poller;
 
-    public TrackerTile(String url, String email, String threshold, String interval, int trackerNumber) {
+    private JPanel trackerPanel, trackerTile;
+    private JButton urlButton, emailButton, thresholdText, intervalText, changePercentage, terminateButton;
+
+    public TrackerTile(WebPoller poller, JPanel trackerPanel, int trackerNumber, String url, String email, String threshold, String interval) {
+        this.poller = poller;
+        this.trackerPanel = trackerPanel;
+        this.trackerNumber = trackerNumber;
+        this.trackerTile = this;
         this.url = url;
         this.email = email;
-        this.trackerNumber = trackerNumber;
-        this.timer = new Timer((Integer.parseInt(interval) * 1000), this);
+
+        new Timer((Integer.parseInt(interval) * 1000), taskPerformer).start();
 
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(760, 90));
@@ -40,57 +52,73 @@ public class TrackerTile extends JPanel implements ActionListener {
         c.weighty = 0.1;
         c.weightx = 0.5;
 
-        JButton urlButton = new JButton();
-        urlButton.setText("<HTML>URL: <FONT color=\"#000099\"><U>" + url + "</U></FONT></HTML>");
+        urlButton = new JButton();
+        urlButton.setText("<HTML>URL: <FONT color=\"#000099\"><U>" + abbreviate(url, 50) + "</U></FONT></HTML>");
         urlButton.setHorizontalAlignment(SwingConstants.LEFT);
         urlButton.setBorderPainted(false);
         urlButton.setOpaque(false);
         urlButton.setBackground(Color.WHITE);
+        urlButton.setToolTipText(url);
         urlButton.addActionListener(new UrlButtonListener());
         c.gridx = 0;
         c.gridy = 0;
         add(urlButton, c);
 
-        JButton emailButton = new JButton();
-        emailButton.setText("<HTML>Email: <FONT color=\"#000099\"><U>" + email + "</U></FONT></HTML>");
+        emailButton = new JButton();
+        emailButton.setText("<HTML>Email: <FONT color=\"#000099\"><U>" + abbreviate(email, 50) + "</U></FONT></HTML>");
         emailButton.setHorizontalAlignment(SwingConstants.LEFT);
         emailButton.setBorderPainted(false);
         emailButton.setOpaque(false);
         emailButton.setBackground(Color.WHITE);
+        emailButton.setToolTipText(email);
         emailButton.addActionListener(new EmailButtonListener());
         c.gridx = 0;
         c.gridy = 1;
         add(emailButton, c);
 
-        JButton thresholdText = new JButton();
-        thresholdText.setText("<HTML>Threshold: <U>" + threshold + "</U></FONT></HTML>");
+        thresholdText = new JButton();
+        thresholdText.setText("<HTML>Threshold: <U>" + abbreviate(threshold, 5) + "%</U></FONT></HTML>");
         thresholdText.setHorizontalAlignment(SwingConstants.LEFT);
         thresholdText.setBorderPainted(false);
         thresholdText.setOpaque(false);
         thresholdText.setBackground(Color.WHITE);
+        thresholdText.setToolTipText(threshold);
         c.gridx = 0;
         c.gridy = 2;
         add(thresholdText, c);
 
-        JButton intervalText = new JButton();
-        intervalText.setText("<HTML>Interval: <U>" + interval + "</U></FONT></HTML>");
+        intervalText = new JButton();
+        intervalText.setText("<HTML>Interval: <U>" + abbreviate(interval, 5) + "s</U></FONT></HTML>");
         intervalText.setHorizontalAlignment(SwingConstants.LEFT);
         intervalText.setBorderPainted(false);
         intervalText.setOpaque(false);
         intervalText.setBackground(Color.WHITE);
+        intervalText.setToolTipText(interval);
         c.gridx = 0;
         c.gridy = 3;
         add(intervalText, c);
 
-        JButton changePercentage = new JButton();
-        changePercentage.setText("<HTML>Diff %: <FONT color=\"#CC1100\"><U>" + MainWindow.webPollerList.get(trackerNumber).getPercentDiff() + "</U></FONT></HTML>");
+        changePercentage = new JButton();
+        changePercentage.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + 0.00 + "%</U></FONT></HTML>");
         changePercentage.setHorizontalAlignment(SwingConstants.LEFT);
         changePercentage.setBorderPainted(false);
         changePercentage.setOpaque(false);
         changePercentage.setBackground(Color.WHITE);
+        changePercentage.setToolTipText(String.valueOf(poller.getPercentSimilarity()));
         c.gridx = 2;
-        c.gridy = 2;
+        c.gridy = 3;
         add(changePercentage, c);
+
+        terminateButton = new JButton();
+        terminateButton.setText("Terminate");
+        terminateButton.setBackground(Color.WHITE);
+        terminateButton.setToolTipText(String.valueOf("end this tracker"));
+        terminateButton.addActionListener(new TerminateButtonListener());
+        c.gridx = 3;
+        c.gridy = 0;
+        c.weightx = 0.1;
+        c.anchor = GridBagConstraints.FIRST_LINE_END;
+        add(terminateButton, c);
 
         ImageIcon pollingSpinner = new ImageIcon("src/main/java/com/simmeringc/websitePoller/resources/spinner.gif");
         c.weightx = 0.0;
@@ -100,12 +128,11 @@ public class TrackerTile extends JPanel implements ActionListener {
     }
 
     //update percent diff every interval
-    public void actionPerformed(ActionEvent ev) {
-        if (ev.getSource() == timer) {
-            System.out.println(MainWindow.webPollerList.get(trackerNumber).getPercentDiff());
-            repaint();// this will call at every 1 second
+    ActionListener taskPerformer = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            changePercentage.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT></HTML>");
         }
-    }
+    };
 
     //inner-class: opens webpage for TrackerTile URL
     class UrlButtonListener implements ActionListener {
@@ -138,6 +165,16 @@ public class TrackerTile extends JPanel implements ActionListener {
                     ex.printStackTrace();
                 }
             }
+        }
+    }
+
+    //inner-class: terminates tracker-thread and removes TrackerTile
+    class TerminateButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            executerThreads.get(trackerNumber).shutdown();
+            trackerPanel.remove(trackerTile);
+            trackerPanel.repaint();
+            systemLogTerminateTracker(url);
         }
     }
 }

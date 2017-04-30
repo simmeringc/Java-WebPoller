@@ -22,24 +22,27 @@ import java.util.concurrent.TimeUnit;
 
 public class MainWindow {
 
-    //swing scope references
-    private JFrame frame;
-    private JLabel urlFormLabel, emailFormLabel, thresholdFormLabel, pollIntervalFormLabel;
-    private JPanel inputPanel, logPanel, trackerPanel;
-    private JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
-    private JButton enterButton, helpButton;
-    private JScrollPane systemLogPanel, trackerScrollContainer;
     private String oldHtml;
 
     //website counter
     private static int trackerNumber = 0;
 
-    //keep track of trackers
-    public static ArrayList<JPanel> trackerTileList = new ArrayList<JPanel>();
-    public static ArrayList<WebPoller> webPollerList = new ArrayList<WebPoller>();
+    //keep track of threads that are executing runnable in WebPoller
+    public static ArrayList<ScheduledExecutorService> executerThreads = new ArrayList<ScheduledExecutorService>();
+
+    //keep track of TrackerTiles
+    public static ArrayList<TrackerTile> trackerTiles = new ArrayList<TrackerTile>();
 
     //instantiate systemLog systemLogHelper
     private SystemLog systemLog = new SystemLog();
+
+    //swing scope references
+    private JFrame frame;
+    private JLabel urlFormLabel, emailFormLabel, thresholdFormLabel, pollIntervalFormLabel;
+    public JPanel inputPanel, logPanel, trackerPanel;
+    private JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
+    private JButton enterButton, helpButton;
+    private JScrollPane systemLogPanel, trackerScrollContainer;
 
     public static void main(String[] args) {
         //take the menu bar off the JFrame
@@ -122,7 +125,7 @@ public class MainWindow {
         systemLogHelp();
 
         //tesing
-        urlForm.setText("http://www.simmeringc.com");
+        urlForm.setText("https://www.google.com");
         emailForm.setText("connersimmering@gmail.com");
         thresholdForm.setText("10");
         pollIntervalForm.setText("10");
@@ -158,29 +161,34 @@ public class MainWindow {
     //trackerScrollContainer counter redraw
     public void incrementTrackerPanelCounter() {
         trackerNumber++;
-        trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Websites being tracked: " + trackerNumber + " "));
+        if (trackerNumber == 1) {
+            trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Tracking " + trackerNumber + " website"));
+        } else {
+            trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Tracking " + trackerNumber + " websites"));
+        }
     }
 
     //create new thread for intervaled content analysis
-    public void createPoller() {
+    public WebPoller createPoller() {
         double thresholdPercent = Double.parseDouble(getThresholdFormText());
         long interval = Long.parseLong(getPollIntervalFormText());
-
-        WebPoller pollerRunnable = new WebPoller(getUrlFormText(), oldHtml, trackerNumber, thresholdPercent);
-        webPollerList.add(pollerRunnable);
+        WebPoller pollerRunnable = new WebPoller(getUrlFormText(), oldHtml, thresholdPercent);
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executerThreads.add(executor);
         executor.scheduleAtFixedRate(pollerRunnable, 0, interval, TimeUnit.SECONDS);
+
+        return pollerRunnable;
     }
 
     //method: called from EnterButtonListener to create and append TrackerTile to TrackerPanel in GUI
     public void addTrackerTile() {
-        createPoller();
-        TrackerTile trackerTile = new TrackerTile(getUrlFormText(), getEmailFormText(), getThresholdFormText(), getPollIntervalFormText(), trackerNumber);
+        WebPoller pollerRunnable = createPoller();
+        TrackerTile trackerTile = new TrackerTile(pollerRunnable, trackerPanel, trackerNumber, getUrlFormText(), getEmailFormText(), getThresholdFormText(), getPollIntervalFormText());
         JSeparator jSeparator = new JSeparator();
         jSeparator.setMaximumSize(new Dimension(5, 5));
         jSeparator.setMinimumSize(new Dimension(5, 5));
-        trackerTileList.add(trackerTile);
+        trackerTiles.add(trackerTile);
         trackerPanel.add(trackerTile);
         trackerPanel.add(jSeparator);
         incrementTrackerPanelCounter();
