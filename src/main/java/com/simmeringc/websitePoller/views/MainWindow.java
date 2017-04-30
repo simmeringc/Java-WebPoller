@@ -5,8 +5,6 @@
 package com.simmeringc.websitePoller.views;
 
 import com.simmeringc.websitePoller.controllers.WebPoller;
-import com.simmeringc.websitePoller.models.Cache;
-import com.simmeringc.websitePoller.models.Node;
 import static com.simmeringc.websitePoller.views.InputVerifier.verifyInput;
 import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
 import static com.simmeringc.websitePoller.views.SystemLog.*;
@@ -19,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URI;
 import java.awt.Desktop; //flagged for old API usage
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,15 +31,16 @@ public class MainWindow {
     JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
     JButton enterButton, helpButton;
     JScrollPane systemLogPanel, trackerScrollContainer;
+    String oldHtml;
 
     //website counter
     public static int trackerNumber = 0;
 
+    //keep track of trackers
+    public static ArrayList trackerTileList = new ArrayList();
+
     //instantiate systemLog systemLogHelper
     public SystemLog systemLog = new SystemLog();
-
-    //instantiate cache models
-    public Cache cache = new Cache();
 
     public static void main(String[] args) {
         //take the menu bar off the JFrame
@@ -135,11 +135,12 @@ public class MainWindow {
         trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Websites being tracked: " + trackerNumber + " "));
     }
 
+    //create new thread for intervaled content analysis
     public void createPoller() {
-        int thresholdPercent = Integer.parseInt(thresholdForm.getText());
+        double thresholdPercent = Double.parseDouble(thresholdForm.getText());
         long interval = Long.parseLong(pollIntervalForm.getText());
 
-        WebPoller pollerRunnable = new WebPoller(urlForm.getText(), trackerNumber, thresholdPercent);
+        WebPoller pollerRunnable = new WebPoller(urlForm.getText(), oldHtml, trackerNumber, thresholdPercent);
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
         executor.scheduleAtFixedRate(pollerRunnable, 0, interval, TimeUnit.SECONDS);
@@ -147,10 +148,11 @@ public class MainWindow {
 
     //method: called from EnterButtonListener to create and append TrackerTile to TrackerPanel in GUI
     public void addTrackerTile() {
-        incrementTrackerPanelCounter();
         createPoller();
+        incrementTrackerPanelCounter();
 
         trackerTile = new JPanel();
+        trackerTile.setLayout(new GridLayout(4,4));
         trackerTile.setPreferredSize(new Dimension(760, 90));
         trackerTile.setMaximumSize(new Dimension(760, 90));
         trackerTile.setMinimumSize(new Dimension(760, 90));
@@ -187,6 +189,8 @@ public class MainWindow {
         intervalText.setOpaque(false);
         intervalText.setBackground(Color.WHITE);
 
+        ImageIcon pollingSpinner = new ImageIcon("ajax-loader.gif");
+
         trackerTile.add(urlButton);
         trackerTile.add(emailButton);
         trackerTile.add(thresholdText);
@@ -196,6 +200,7 @@ public class MainWindow {
         jSeparator.setMaximumSize(new Dimension(5, 5));
         jSeparator.setMinimumSize(new Dimension(5, 5));
 
+        trackerTileList.add(trackerTile);
         trackerPanel.add(trackerTile);
         trackerPanel.add(jSeparator);
 
@@ -226,12 +231,12 @@ public class MainWindow {
             String emailFormText = emailForm.getText();
             String changeThresholdText = thresholdForm.getText();
             String pollIntervalText = pollIntervalForm.getText();
-            String html = null;
 
             try {
                 verifyInput(urlFromText, emailFormText, changeThresholdText, pollIntervalText);
                 try {
-                    html = getHtml(url);
+                    oldHtml = getHtml(url);
+                    addTrackerTile();
                     systemLogHtmlGetSuccessful();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -239,9 +244,6 @@ public class MainWindow {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            Node page = new Node(html);
-            cache.put(url, page);
-            addTrackerTile();
         }
     }
 
