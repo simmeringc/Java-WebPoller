@@ -1,5 +1,7 @@
 /**
  * Created by Conner on 4/28/17.
+ *
+ * verifies MainWindow form input
  */
 
 package com.simmeringc.websitePoller.views;

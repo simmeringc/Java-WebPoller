@@ -1,5 +1,8 @@
 /**
  * Created by Conner on 4/28/17.
+ *
+ * uses JSoup to preform an HTML get() on a website,
+ * doesn't always work
  */
 
 package com.simmeringc.websitePoller.controllers;
@@ -7,8 +10,6 @@ package com.simmeringc.websitePoller.controllers;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogHtmlGetFailed;
 
 import org.jsoup.*;
-
-
 
 public class WebRequester {
     static String html = "";

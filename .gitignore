@@ -21,6 +21,7 @@ buildNumber.properties
 
 # Custom - intellij managment
 .idea/
+*.docx
 
 # User-specific stuff:
 .idea/workspace.xml
@@ -56,5 +57,3 @@ buildNumber.properties
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 .DS_Store
-
-

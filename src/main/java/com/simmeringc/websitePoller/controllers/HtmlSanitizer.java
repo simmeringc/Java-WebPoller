@@ -2,6 +2,9 @@
  * Created by Conner on 4/30/17.
  *
  * https://github.com/OWASP/java-html-sanitizer
+ * contains policies for filtering HTML get()
+ *
+ * print filteredHtml to see the HTML that the application is diffing
  */
 
 package com.simmeringc.websitePoller.controllers;
@@ -18,7 +21,6 @@ public class HtmlSanitizer {
                         "br", "ul", "ol", "li", "iframe", "textarea")
                 .toFactory();
         String filteredHtml = policy.sanitize(str);
-        System.out.println(filteredHtml);
         return filteredHtml;
     }
 }

@@ -1,5 +1,7 @@
 /**
  * Created by Conner on 4/30/17.
+ *
+ * new frame thread displays comprehensive diff between webpage changes
  */
 
 package com.simmeringc.websitePoller.views;;

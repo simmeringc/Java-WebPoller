@@ -1,14 +1,15 @@
 /**
  * Created by Conner on 4/28/17.
  *
- * Insecure TLS/SMTP mailer from:
  * https://www.mkyong.com/java/javamail-api-sending-email-via-gmail-smtp-example/
+ * insecure TLS/SMTP mailer
  */
 
 package com.simmeringc.websitePoller.controllers;
 
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogEmailFailed;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogEmailSent;
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import java.util.Properties;
 import javax.mail.Message;
@@ -45,7 +46,7 @@ public class GoogleMail {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("SWP: reporting a " + threshold + "% html-diff at " + url);
-            message.setText("Dear " + email + ",\n\n" + "Your web poller has detected a " + threshold + "% change at " + url + ".");
+            message.setText("Dear " + email + ",\n\n" + "Your web poller has detected a " + threshold + "% change at " + abbreviate(url, 30) + ".");
 
             Transport.send(message);
             systemLogEmailSent(email);

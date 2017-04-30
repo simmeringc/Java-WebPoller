@@ -2,7 +2,8 @@
  * Created by Conner on 4/29/17.
  *
  * computes the character pairs from the words of each of the two input strings,
- * then iterates through the ArrayLists to find the size of the intersection.
+ * then iterates through the ArrayLists to find the size of the intersection,
+ * calls HtmlSanitizer to filter strings
  */
 
 package com.simmeringc.websitePoller.controllers;

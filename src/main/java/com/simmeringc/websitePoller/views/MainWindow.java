@@ -1,5 +1,7 @@
 /**
  * Created by Conner on 4/28/17.
+ *
+ * main thread and parent GUI
  */
 
 package com.simmeringc.websitePoller.views;
@@ -17,7 +19,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +44,7 @@ public class MainWindow {
     private JFrame frame;
     private JMenuBar menuBar;
     private JMenu debug, dummyData;
-    private JMenuItem showThreads, googleFill;
+    private JMenuItem showThreads, googleFill, redditNewFill, redditCSCareerQuestionsFill, stackOverflowHot, gitHubRawText, hackerNewsNew;
     private JLabel urlFormLabel, emailFormLabel, thresholdFormLabel, pollIntervalFormLabel;
     public JPanel inputPanel, logPanel, trackerPanel;
     private JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
@@ -74,15 +75,33 @@ public class MainWindow {
         showThreads = new JMenuItem("Show threads");
         showThreads.addActionListener(new ShowThreadsListener());
 
-        googleFill = new JMenuItem("http://www.google.com");
+        redditNewFill = new JMenuItem("https://www.reddit.com/new/");
+        redditNewFill.addActionListener(new RedditNewFillListener());
+
+        redditCSCareerQuestionsFill = new JMenuItem("https://www.reddit.com/r/cscareerquestions/new");
+        redditCSCareerQuestionsFill.addActionListener(new RedditCSCareerQuestionsFillListener());
+
+        stackOverflowHot = new JMenuItem("https://stackoverflow.com/?tab=hot");
+        stackOverflowHot.addActionListener(new StackOverflowHotListener());
+
+        hackerNewsNew = new JMenuItem("https://news.ycombinator.com/newest");
+        hackerNewsNew.addActionListener(new HackerNewsNewListener());
+
+        googleFill = new JMenuItem("https://www.google.com");
         googleFill.addActionListener(new GoogleFillListener());
 
+        gitHubRawText = new JMenuItem("https://github.com/simmeringc/archive-simmeringc.github.io");
+        gitHubRawText.addActionListener(new GitHubRawTextListener());
+
+        //dummyData.add(redditNewFill);
+        //dummyData.add(redditCSCareerQuestionsFill);
+        dummyData.add(stackOverflowHot);
+        dummyData.add(hackerNewsNew);
         dummyData.add(googleFill);
+        dummyData.add(gitHubRawText);
         debug.add(dummyData);
         debug.add(showThreads);
         menuBar.add(debug);
-
-
 
         //create panel component containers
         inputPanel = new JPanel();
@@ -245,9 +264,59 @@ public class MainWindow {
     }
 
     //inner-class: input quick test data
+    class RedditNewFillListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            urlForm.setText("https://www.reddit.com/new/");
+            emailForm.setText("connersimmering@gmail.com");
+            thresholdForm.setText("5");
+            pollIntervalForm.setText("5");
+        }
+    }
+
+    //inner-class: input quick test data
+    class RedditCSCareerQuestionsFillListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            urlForm.setText("https://www.reddit.com/r/cscareerquestions/new/");
+            emailForm.setText("connersimmering@gmail.com");
+            thresholdForm.setText("5");
+            pollIntervalForm.setText("5");
+        }
+    }
+
+    //inner-class: input quick test data
+    class StackOverflowHotListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            urlForm.setText("https://stackoverflow.com/?tab=hot");
+            emailForm.setText("connersimmering@gmail.com");
+            thresholdForm.setText("5");
+            pollIntervalForm.setText("5");
+        }
+    }
+
+    //inner-class: input quick test data
+    class HackerNewsNewListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            urlForm.setText("https://news.ycombinator.com/newest");
+            emailForm.setText("connersimmering@gmail.com");
+            thresholdForm.setText("5");
+            pollIntervalForm.setText("5");
+        }
+    }
+
+    //inner-class: input quick test data
     class GoogleFillListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             urlForm.setText("https://www.google.com");
+            emailForm.setText("connersimmering@gmail.com");
+            thresholdForm.setText("5");
+            pollIntervalForm.setText("5");
+        }
+    }
+
+    //inner-class: input quick test data
+    class GitHubRawTextListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            urlForm.setText("https://github.com/simmeringc/archive-simmeringc.github.io");
             emailForm.setText("connersimmering@gmail.com");
             thresholdForm.setText("5");
             pollIntervalForm.setText("5");
@@ -266,6 +335,7 @@ public class MainWindow {
                     addTrackerTile();
                     systemLogHtmlGetSuccessful(url);
                 } catch (Exception ex) {
+                    systemLogHtmlGetFailedTryAgain();
                     ex.printStackTrace();
                 }
             } catch (Exception ex) {

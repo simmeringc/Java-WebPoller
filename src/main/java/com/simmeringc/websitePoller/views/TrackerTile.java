@@ -1,5 +1,7 @@
 /**
  * Created by Conner on 4/29/17.
+ *
+ * trackerTile GUI with a finniky gridBagLayout
  */
 
 package com.simmeringc.websitePoller.views;
@@ -103,7 +105,7 @@ public class TrackerTile extends JPanel {
 
         diffButton = new JButton();
         diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT></HTML>");
-        diffButton.setToolTipText(String.valueOf(poller.getpreProcessedDiff() + "% diff, click to view"));
+        diffButton.setToolTipText(String.valueOf(poller.getPreProcessedPercentDiff() + "% diff, click to view"));
         diffButton.addActionListener(new DiffButtonListener());
         c.gridx = 2;
         c.gridy = 3;
@@ -142,10 +144,9 @@ public class TrackerTile extends JPanel {
         public void actionPerformed(ActionEvent evt) {
             if (poller.getPercentDiff() > poller.getThresholdPercent()) {
                 diffButton.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT></HTML>");
-                diffButton.setToolTipText(String.valueOf(poller.getpreProcessedDiff() + "% diff, click to view"));
-                systemLogDiffDetected(url, threshold);
+                diffButton.setToolTipText(String.valueOf(poller.getPreProcessedPercentDiff() + "% diff, click to view"));
             } else {
-                diffButton.setToolTipText(String.valueOf(poller.getpreProcessedDiff() + "% diff, click to view"));
+                diffButton.setToolTipText(String.valueOf(poller.getPreProcessedPercentDiff() + "% diff, click to view"));
                 diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT></HTML>");
             }
         }

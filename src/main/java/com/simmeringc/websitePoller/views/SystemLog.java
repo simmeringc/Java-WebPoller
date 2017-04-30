@@ -1,5 +1,7 @@
 /**
  * Created by Conner on 4/28/17.
+ *
+ * dispatches messages to the MainWindow systemLog
  */
 
 package com.simmeringc.websitePoller.views;
@@ -34,12 +36,13 @@ public class SystemLog {
         return sdf.format(date);
     }
     public static void systemLogHelp() {
+        String line0 = "**** tracking reddit sites can cause this app to crash ****";
         String line1 = "1. SimmeringC WebPoller: get email alerts when the content on a webpage changes";
         String line2 = "2. Enter a URL and an email to be alerted upon a webpage change.";
         String line3 = "3. Set the change-threshold (percent) and poll-interval (seconds), then hit 'Enter'.";
         String line4 = "4. If the threshold is set to 10, an email will be sent when 10% of the wep page changes, etc.";
         String line5 = "5. The SimmeringC WebPoller will continue to poll websites every interval and send alerts until the app is closed.";
-        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + line0 + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
     }
     public static void systemLogHtmlGetSuccessful(String url) {
         String newMessage = timeStamp() + " -" + " HTML get() successful on " + abbreviate(url, 40) + ", starting tracker.";
@@ -47,6 +50,10 @@ public class SystemLog {
     }
     public static void systemLogHtmlGetFailed(String url) {
         String newMessage = timeStamp() + " -" + " HTML get() failed at " + abbreviate(url, 40) + ".";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogHtmlGetFailedTryAgain() {
+        String newMessage = timeStamp() + " -" + " HTML get() failed, try again.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogValidateUrlInputFailed() {
@@ -89,7 +96,7 @@ public class SystemLog {
         String newMessage = timeStamp() + " -" + " Email to " + abbreviate(email, 40) + " FAILED to send.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
-    public static void systemLogDiffDetected(String url, String threshold) {
+    public static void systemLogDiffDetected(String url, Double threshold) {
         String newMessage = timeStamp() + " - " + threshold + "% diff detechted at: " + abbreviate(url, 40);
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
@@ -98,7 +105,7 @@ public class SystemLog {
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogCreatingDiff(String url) {
-        String newMessage = timeStamp() + " -" + " Creating " + abbreviate(url, 40) + " diff, please wait.";
+        String newMessage = timeStamp() + " -" + " Creating " + abbreviate(url, 40) + " diff, please wait, performance may suffer for large diffs.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogShowThread(ScheduledExecutorService thread) {
