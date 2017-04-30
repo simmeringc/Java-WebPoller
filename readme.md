@@ -22,14 +22,14 @@ The application can be built and run in your IDE or from the generated JAR:
 
 'website-poller-development-jar-with-dependencies.jar'
 
-##Testing:
+## Testing:
 
 Access the Menu Toolbar and enter your email to quickly test the applications features. See the PDF for a visual guide.
 
-##HTML Filter Policy:
+## HTML Filter Policy:
 
 Visit ‘/controllers/HtmlSanitizer.jar’ to view the policies for which a diff is calculated. The application can be extended to monitor specific HTML tags or even tag Id’s.
 
-##Warning:
+## Warning:
 
 The application may crash if it receives too much HTML from a get() request. Content rich websites like reddit.com overload the application’s local storage.
