@@ -5,7 +5,6 @@
 package com.simmeringc.websitePoller.controllers;
 
 import com.simmeringc.websitePoller.views.TrackerTile;
-import org.bitbucket.cowwoc.diffmatchpatch.DiffMatchPatch;
 
 import static com.simmeringc.websitePoller.controllers.GoogleMail.sendMail;
 import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
@@ -23,9 +22,10 @@ public class WebPoller implements Runnable {
     private String oldHtml;
     private String newHtml;
     private double thresholdPercent;
-    private double preProssesedDiff;
+    private double preProcessedDiff;
     private double percentDiff;
     private double percentSimilarity;
+    private Boolean emailNotSent;
 
 
     public WebPoller(String url, String email, String oldHtml, double thresholdPercent, int trackerNumber) {
@@ -34,6 +34,7 @@ public class WebPoller implements Runnable {
         this.oldHtml = oldHtml;
         this.thresholdPercent = thresholdPercent;
         this.trackerNumber = trackerNumber;
+        this.emailNotSent = true;
     }
 
     public void run() {
@@ -43,26 +44,28 @@ public class WebPoller implements Runnable {
             systemLogHtmlGetFailed(url);
             ex.printStackTrace();
         }
-        percentSimilarity = compareStrings(oldHtml, newHtml);
+        percentSimilarity = compareStrings(oldHtml, newHtml) * 100;
         setPercentDiff(percentSimilarity);
         trackerTile = trackerTiles.get(trackerNumber);
-        if (trackerTile.emailAlertsEnabled() && percentDiff >= thresholdPercent) {
-            System.out.println("attempting send");
+        if (trackerTile.emailAlertsEnabled() && percentDiff >= thresholdPercent && emailNotSent) {
             sendMail(url, email, thresholdPercent);
+            emailNotSent = false;
+        }
+        if (percentDiff < thresholdPercent) {
+            emailNotSent = true;
         }
 
     }
 
     public double setPercentDiff(double percentSimilarity) {
-        if (percentSimilarity == 1.0) {
-            return 0.00;
-        } else {
-            double d = (1.00 - percentSimilarity);
-            preProssesedDiff = d;
-            DecimalFormat df = new DecimalFormat("#.##");
-            percentDiff = Double.parseDouble(df.format(d));
-            return percentDiff;
-        }
+        double d = (100.00 - percentSimilarity);
+        System.out.println(d);
+        System.out.println(percentSimilarity);
+        preProcessedDiff = d;
+        DecimalFormat df = new DecimalFormat("#.##");
+        percentDiff = Double.parseDouble(df.format(d));
+        System.out.println(percentDiff);
+        return percentDiff;
     }
 
     public String getOldHtml() {
@@ -77,15 +80,11 @@ public class WebPoller implements Runnable {
         return thresholdPercent;
     }
 
-    public double getPreProssesedDiff() {
-        return preProssesedDiff;
+    public double getpreProcessedDiff() {
+        return preProcessedDiff;
     }
 
     public double getPercentDiff() {
         return percentDiff;
-    }
-
-    public double getPercentSimilarity() {
-        return percentSimilarity;
     }
 }

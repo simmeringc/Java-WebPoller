@@ -31,7 +31,6 @@ public class DiffPane extends JFrame implements Runnable {
 
     public void run() {
         try {
-            System.out.println("building");
             JEditorPane editorPane = new JEditorPane("text/html", getDiff());
             JScrollPane scrollPane = new JScrollPane(editorPane);
             add(scrollPane);

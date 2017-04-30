@@ -5,13 +5,10 @@
 package com.simmeringc.websitePoller.views;
 
 import com.simmeringc.websitePoller.controllers.WebPoller;
-import static com.simmeringc.websitePoller.views.SystemLog.systemLogDiffDetected;
+
 import static com.simmeringc.websitePoller.views.MainWindow.executerThreads;
 import static com.simmeringc.websitePoller.views.MainWindow.getImage;
-import static com.simmeringc.websitePoller.views.SystemLog.systemLogTerminateTracker;
-import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningBrowser;
-import static com.simmeringc.websitePoller.views.SystemLog.systemLogOpeningMailClient;
-import static com.simmeringc.websitePoller.views.SystemLog.systemLogUriFailed;
+import static com.simmeringc.websitePoller.views.SystemLog.*;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 import javax.swing.*;
@@ -30,10 +27,11 @@ public class TrackerTile extends JPanel {
     private WebPoller poller;
 
     private JPanel trackerPanel, trackerTile;
+    private JSeparator jSeparator;
     private JButton urlButton, emailButton, thresholdText, intervalText, diffButton, terminateButton;
     private JCheckBox enableEmailAlerts;
 
-    public TrackerTile(WebPoller poller, JPanel trackerPanel, int trackerNumber, String url, String email, String threshold, String interval) {
+    public TrackerTile(WebPoller poller, JPanel trackerPanel, JSeparator jSeparator, int trackerNumber, String url, String email, String threshold, String interval) {
         this.url = url;
         this.email = email;
         this.threshold = threshold;
@@ -41,6 +39,7 @@ public class TrackerTile extends JPanel {
         this.poller = poller;
         this.trackerPanel = trackerPanel;
         this.trackerTile = this;
+        this.jSeparator = jSeparator;
 
         new Timer((Integer.parseInt(interval) * 1000), taskPerformer).start();
 
@@ -57,7 +56,7 @@ public class TrackerTile extends JPanel {
         c.weightx = 0.5;
 
         urlButton = new JButton();
-        urlButton.setText("<HTML>URL: <FONT color=\"#000099\"><U>" + abbreviate(url, 50) + "</U></FONT></HTML>");
+        urlButton.setText("<HTML>URL: <FONT color=\"#000099\"><U>" + abbreviate(url, 40) + "</U></FONT></HTML>");
         urlButton.setHorizontalAlignment(SwingConstants.LEFT);
         urlButton.setBorderPainted(false);
         urlButton.setOpaque(false);
@@ -69,7 +68,7 @@ public class TrackerTile extends JPanel {
         add(urlButton, c);
 
         emailButton = new JButton();
-        emailButton.setText("<HTML>Email: <FONT color=\"#000099\"><U>" + abbreviate(email, 50) + "</U></FONT></HTML>");
+        emailButton.setText("<HTML>Email: <FONT color=\"#000099\"><U>" + abbreviate(email, 40) + "</U></FONT></HTML>");
         emailButton.setHorizontalAlignment(SwingConstants.LEFT);
         emailButton.setBorderPainted(false);
         emailButton.setOpaque(false);
@@ -103,9 +102,8 @@ public class TrackerTile extends JPanel {
         add(intervalText, c);
 
         diffButton = new JButton();
-        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT>  (view)</HTML>");
-        diffButton.setHorizontalAlignment(SwingConstants.LEFT);
-        diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
+        diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + 0.00 + "%</U></FONT></HTML>");
+        diffButton.setToolTipText(String.valueOf(poller.getpreProcessedDiff() + "% diff, click to view"));
         diffButton.addActionListener(new DiffButtonListener());
         c.gridx = 2;
         c.gridy = 3;
@@ -143,12 +141,12 @@ public class TrackerTile extends JPanel {
     ActionListener taskPerformer = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             if (poller.getPercentDiff() > poller.getThresholdPercent()) {
-                diffButton.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT> (view)</HTML>");
-                diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
+                diffButton.setText("<HTML>Diff: <FONT color=\"#CC1100\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT></HTML>");
+                diffButton.setToolTipText(String.valueOf(poller.getpreProcessedDiff() + "% diff, click to view"));
                 systemLogDiffDetected(url, threshold);
             } else {
-                diffButton.setToolTipText(String.valueOf(poller.getPreProssesedDiff() + "% diff, click to view"));
-                diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT> (view)</HTML>");
+                diffButton.setToolTipText(String.valueOf(poller.getpreProcessedDiff() + "% diff, click to view"));
+                diffButton.setText("<HTML>Diff: <FONT color=\"#3CB371\" size=14px><U>" + poller.getPercentDiff() + "%</U></FONT></HTML>");
             }
         }
     };
@@ -190,6 +188,7 @@ public class TrackerTile extends JPanel {
     //inner-class: displays text diff in new pane | oldHtml -> newHtml
     class DiffButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
+            systemLogCreatingDiff(url);
             new Thread(new DiffPane(url, poller.getOldHtml(), poller.getNewHtml())).start();
         }
     }
@@ -198,6 +197,7 @@ public class TrackerTile extends JPanel {
     class TerminateButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             executerThreads.get(trackerNumber).shutdown();
+            trackerPanel.remove(jSeparator);
             trackerPanel.remove(trackerTile);
             MainWindow.trackerNumber--;
             trackerPanel.repaint();

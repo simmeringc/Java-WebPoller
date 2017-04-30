@@ -8,6 +8,9 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ScheduledExecutorService;
+
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 public class SystemLog {
 
@@ -39,11 +42,11 @@ public class SystemLog {
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
     }
     public static void systemLogHtmlGetSuccessful(String url) {
-        String newMessage = timeStamp() + " -" + " HTML get() successful on " + url + ", starting tracker...";
+        String newMessage = timeStamp() + " -" + " HTML get() successful on " + abbreviate(url, 40) + ", starting tracker.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogHtmlGetFailed(String url) {
-        String newMessage = timeStamp() + " -" + " HTML get() failed at " + url + ".";
+        String newMessage = timeStamp() + " -" + " HTML get() failed at " + abbreviate(url, 40) + ".";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogValidateUrlInputFailed() {
@@ -75,23 +78,31 @@ public class SystemLog {
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogTerminateTracker(String url) {
-        String newMessage = timeStamp() + " -" + " Tracker for " + url + " terminated.";
+        String newMessage = timeStamp() + " -" + " Tracker for " + abbreviate(url, 40) + " terminated, tiles will reposition on scroll.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogEmailSent(String email) {
-        String newMessage = timeStamp() + " -" + " Email sent to  " + email + " **********";
+        String newMessage = timeStamp() + " -" + " Email sent to  " + abbreviate(email, 40) + " **********";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogEmailFailed(String email) {
-        String newMessage = timeStamp() + " -" + " Email to " + email + " FAILED to send.";
+        String newMessage = timeStamp() + " -" + " Email to " + abbreviate(email, 40) + " FAILED to send.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogDiffDetected(String url, String threshold) {
-        String newMessage = timeStamp() + " - " + threshold + " diff detechted at: " + url;
+        String newMessage = timeStamp() + " - " + threshold + "% diff detechted at: " + abbreviate(url, 40);
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogTrackerStarted(String url) {
-        String newMessage = timeStamp() + " - " + " New tracker polling " + url + ".";
+        String newMessage = timeStamp() + " -" + " New tracker polling " + abbreviate(url, 40) + ".";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogCreatingDiff(String url) {
+        String newMessage = timeStamp() + " -" + " Creating " + abbreviate(url, 40) + " diff, please wait.";
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
+    }
+    public static void systemLogShowThread(ScheduledExecutorService thread) {
+        String newMessage = timeStamp() + " -" + thread.toString().substring(48);
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
 }

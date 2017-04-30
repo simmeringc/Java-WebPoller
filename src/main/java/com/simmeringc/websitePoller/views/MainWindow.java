@@ -17,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,9 @@ public class MainWindow {
 
     //swing scope references
     private JFrame frame;
+    private JMenuBar menuBar;
+    private JMenu debug, dummyData;
+    private JMenuItem showThreads, googleFill;
     private JLabel urlFormLabel, emailFormLabel, thresholdFormLabel, pollIntervalFormLabel;
     public JPanel inputPanel, logPanel, trackerPanel;
     private JTextField urlForm, emailForm, thresholdForm, pollIntervalForm;
@@ -48,7 +52,7 @@ public class MainWindow {
 
     public static void main(String[] args) {
         //take the menu bar off the JFrame
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("apple.laf.useScreenMenuBar", "True");
 
         //set the name of the application menu item
         System.setProperty("apple.awt.application.name", "Simmeringc WebPoller");
@@ -61,10 +65,24 @@ public class MainWindow {
 
         //create frame - set frame parameters
         frame = new JFrame();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(809, 601);
-        frame.setTitle("Simmeringc WebPoller");
-        frame.setResizable(false);
+
+        //create menu bar dialog
+        menuBar = new JMenuBar();
+        debug = new JMenu("Debug");
+        dummyData = new JMenu("Dummy data");
+
+        showThreads = new JMenuItem("Show threads");
+        showThreads.addActionListener(new ShowThreadsListener());
+
+        googleFill = new JMenuItem("http://www.google.com");
+        googleFill.addActionListener(new GoogleFillListener());
+
+        dummyData.add(googleFill);
+        debug.add(dummyData);
+        debug.add(showThreads);
+        menuBar.add(debug);
+
+
 
         //create panel component containers
         inputPanel = new JPanel();
@@ -105,7 +123,7 @@ public class MainWindow {
 
         //component: systemLogHelp button
         helpButton = new JButton("Help");
-        helpButton.addActionListener(new SystemLogHelpButtonListener());
+        helpButton.addActionListener(new HelpButtonListener());
 
         //append components to inputPanel
         inputPanel.add(urlFormLabel);
@@ -126,14 +144,12 @@ public class MainWindow {
         logPanel.add(systemLogPanel);
         systemLogHelp();
 
-       // tesing block
-        urlForm.setText("https://www.google.com");
-        emailForm.setText("connersimmering@gmail.com");
-        thresholdForm.setText("10");
-        pollIntervalForm.setText("10");
-
-
-        //append panels to frame
+        //append panels to frame - frame parameters
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setSize(809, 601);
+        frame.setTitle("Simmeringc WebPoller");
+        frame.setResizable(false);
+        frame.setJMenuBar(menuBar);
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
         frame.getContentPane().add(BorderLayout.CENTER, logPanel);
         frame.getContentPane().add(BorderLayout.NORTH, trackerScrollContainer);
@@ -186,11 +202,11 @@ public class MainWindow {
 
     //method: called from EnterButtonListener to create and append TrackerTile to TrackerPanel in GUI
     public void addTrackerTile() {
-        WebPoller pollerRunnable = createPoller();
-        TrackerTile trackerTile = new TrackerTile(pollerRunnable, trackerPanel, trackerNumber, getUrlFormText(), getEmailFormText(), getThresholdFormText(), getPollIntervalFormText());
         JSeparator jSeparator = new JSeparator();
         jSeparator.setMaximumSize(new Dimension(5, 5));
         jSeparator.setMinimumSize(new Dimension(5, 5));
+        WebPoller pollerRunnable = createPoller();
+        TrackerTile trackerTile = new TrackerTile(pollerRunnable, trackerPanel, jSeparator, trackerNumber, getUrlFormText(), getEmailFormText(), getThresholdFormText(), getPollIntervalFormText());
         trackerTiles.add(trackerTile);
         trackerPanel.add(trackerTile);
         trackerPanel.add(jSeparator);
@@ -219,6 +235,25 @@ public class MainWindow {
         }
     }
 
+    //inner-class: show active threads in system log
+    class ShowThreadsListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            for (ScheduledExecutorService thread : executerThreads) {
+                systemLogShowThread(thread);
+            }
+        }
+    }
+
+    //inner-class: input quick test data
+    class GoogleFillListener implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            urlForm.setText("https://www.google.com");
+            emailForm.setText("connersimmering@gmail.com");
+            thresholdForm.setText("5");
+            pollIntervalForm.setText("5");
+        }
+    }
+
     //inner-class: primary call to action
     class EnterButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
@@ -240,7 +275,7 @@ public class MainWindow {
     }
 
     //inner-class: displays help intro message
-    class SystemLogHelpButtonListener implements ActionListener {
+    class HelpButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             systemLogHelp();
         }

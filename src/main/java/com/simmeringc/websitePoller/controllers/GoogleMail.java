@@ -45,7 +45,7 @@ public class GoogleMail {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("SWP: reporting a " + threshold + "% html-diff at " + url);
-            message.setText("Dear " + email + ",\n\n" + "Your web poller has detected a " + threshold + "% change at " + url + ".\n\n" + "See a comprehensive diff below:" + "\n\n");
+            message.setText("Dear " + email + ",\n\n" + "Your web poller has detected a " + threshold + "% change at " + url + ".");
 
             Transport.send(message);
             systemLogEmailSent(email);
