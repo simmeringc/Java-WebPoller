@@ -41,7 +41,7 @@ public class SystemLog {
         String line3 = "3. Set the change-threshold (percent) and poll-interval (seconds), then hit 'Enter'.";
         String line4 = "4. If the threshold is set to 10, an email will be sent when 10% of the wep page changes, etc.";
         String line5 = "5. The SimmeringC WebPoller will continue to poll websites every interval and send alerts until the app is closed.";
-        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
+        systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + "\n" + line1 + "\n" + line2 + "\n" + line3 + "\n" + line4 + "\n" + line5 + "\n");
     }
     public static void systemLogHtmlGetSuccessful(String url) {
         String newMessage = timeStamp() + " -" + " HTML get() successful on " + abbreviate(url, 40) + ", starting tracker.";
