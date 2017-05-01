@@ -200,9 +200,19 @@ public class TrackerTile extends JPanel {
             executerThreads.get(trackerNumber).shutdown();
             trackerPanel.remove(jSeparator);
             trackerPanel.remove(trackerTile);
-            MainWindow.trackerNumber--;
+            decrementTrackerPanelCounter();
             trackerPanel.repaint();
             systemLogTerminateTracker(url);
+        }
+    }
+
+    //trackerCounter decrement-redraw, increment in MainWindow
+    public void decrementTrackerPanelCounter() {
+        MainWindow.trackerNumber--;
+        if (trackerNumber == 1) {
+            trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Tracking " + trackerNumber + " website"));
+        } else {
+            trackerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY), "Tracking " + trackerNumber + " websites"));
         }
     }
 }

@@ -7,8 +7,9 @@
 package com.simmeringc.websitePoller.views;
 
 import com.simmeringc.websitePoller.controllers.WebPoller;
+import com.simmeringc.websitePoller.controllers.WebRequester;
+
 import static com.simmeringc.websitePoller.views.InputVerifier.verifyInput;
-import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
 import static com.simmeringc.websitePoller.views.SystemLog.*;
 
 import javax.swing.*;
@@ -19,9 +20,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class MainWindow {
 
@@ -93,8 +92,8 @@ public class MainWindow {
         gitHubRawText = new JMenuItem("https://github.com/simmeringc/archive-simmeringc.github.io");
         gitHubRawText.addActionListener(new GitHubRawTextListener());
 
-        //dummyData.add(redditNewFill);
-        //dummyData.add(redditCSCareerQuestionsFill);
+        dummyData.add(redditNewFill);
+        dummyData.add(redditCSCareerQuestionsFill);
         dummyData.add(stackOverflowHot);
         dummyData.add(hackerNewsNew);
         dummyData.add(googleFill);
@@ -196,7 +195,7 @@ public class MainWindow {
         return pollIntervalForm.getText();
     }
 
-    //trackerScrollContainer counter redraw
+    //trackerCounter increment-redraw, decrement in TrackerTile
     public void incrementTrackerPanelCounter() {
         trackerNumber++;
         if (trackerNumber == 1) {
@@ -212,7 +211,7 @@ public class MainWindow {
         long interval = Long.parseLong(getPollIntervalFormText());
         WebPoller pollerRunnable = new WebPoller(getUrlFormText(), getEmailFormText(), oldHtml, thresholdPercent, trackerNumber);
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executerThreads.add(executor);
         executor.scheduleAtFixedRate(pollerRunnable, 0, interval, TimeUnit.SECONDS);
 
@@ -331,7 +330,9 @@ public class MainWindow {
             try {
                 verifyInput(url, getEmailFormText(), getThresholdFormText(), getPollIntervalFormText());
                 try {
-                    oldHtml = getHtml(url);
+                    ExecutorService executer = Executors.newSingleThreadExecutor();
+                    Future getHtml = executer.submit(new WebRequester(url));
+                    oldHtml = getHtml.get().toString();
                     addTrackerTile();
                     systemLogHtmlGetSuccessful(url);
                 } catch (Exception ex) {

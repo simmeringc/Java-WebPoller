@@ -4,8 +4,11 @@
 
 package com.simmeringc.websitePoller.controllers;
 
-import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
 import static org.junit.Assert.assertEquals;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class WebRequesterTest {
 
@@ -62,6 +65,10 @@ public class WebRequesterTest {
                 " </body>\n" +
                 "</html>";
 
-        assertEquals(html, getHtml(url));
+        ExecutorService executer = Executors.newFixedThreadPool(1);
+        Future getHtml = executer.submit(new WebRequester(url));
+        String retrievedHtml = getHtml.get().toString();
+
+        assertEquals(html, retrievedHtml);
     }
 }

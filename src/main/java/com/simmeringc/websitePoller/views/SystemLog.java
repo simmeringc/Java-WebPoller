@@ -6,13 +6,13 @@
 
 package com.simmeringc.websitePoller.views;
 
+import static org.apache.commons.lang3.StringUtils.abbreviate;
+
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ScheduledExecutorService;
-
-import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 public class SystemLog {
 
@@ -53,7 +53,7 @@ public class SystemLog {
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogHtmlGetFailedTryAgain() {
-        String newMessage = timeStamp() + " -" + " HTML get() failed, try again.";
+        String newMessage = timeStamp() + " -" + " HTML get() failed, try clicking enter multiple times until request is fulfilled.";
         systemLogTextArea.setText(systemLogTextArea.getText() + "\n" + newMessage);
     }
     public static void systemLogValidateUrlInputFailed() {

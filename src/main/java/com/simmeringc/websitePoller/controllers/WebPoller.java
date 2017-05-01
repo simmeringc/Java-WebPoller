@@ -11,12 +11,14 @@ package com.simmeringc.websitePoller.controllers;
 import com.simmeringc.websitePoller.views.TrackerTile;
 
 import static com.simmeringc.websitePoller.controllers.GoogleMail.sendMail;
-import static com.simmeringc.websitePoller.controllers.WebRequester.getHtml;
 import static com.simmeringc.websitePoller.controllers.LetterPairSimilarity.compareStrings;
 import static com.simmeringc.websitePoller.views.MainWindow.trackerTiles;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogDiffDetected;
 
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class WebPoller implements Runnable {
     private int trackerNumber;
@@ -43,7 +45,9 @@ public class WebPoller implements Runnable {
 
     public void run() {
         try {
-            newHtml = getHtml(url);
+            ExecutorService executer = Executors.newSingleThreadExecutor();
+            Future getHtml = executer.submit(new WebRequester(url));
+            newHtml = getHtml.get().toString();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

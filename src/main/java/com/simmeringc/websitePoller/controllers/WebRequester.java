@@ -1,27 +1,31 @@
 /**
  * Created by Conner on 4/28/17.
  *
- * uses JSoup to preform an HTML get() on a website,
- * doesn't always work
+ * callable uses JSoup to preform an HTML get() on a website
  */
 
 package com.simmeringc.websitePoller.controllers;
 
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogHtmlGetFailed;
 
+import java.util.concurrent.Callable;
 import org.jsoup.*;
 
-public class WebRequester {
-    static String html = "";
+public class WebRequester implements Callable {
+    public String html = "";
+    public String url;
 
-    public static String getHtml(String url) throws Exception {
+    public WebRequester(String url) {
+        this.url = url;
+    }
+
+    public String call() throws Exception {
         try {
             html = Jsoup.connect(url).get().html();
             if (html.toString().equals("")) {
                 systemLogHtmlGetFailed(url);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new Exception("HTML get failed");
         }
         return html;
