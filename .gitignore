@@ -23,6 +23,7 @@ buildNumber.properties
 .idea/
 release/
 *.docx
+*.pdf
 
 
 
