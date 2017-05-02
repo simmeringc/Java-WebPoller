@@ -31,10 +31,10 @@ public class MainWindow {
     public static int trackerNumber = 0;
 
     //keep track of threads that are executing runnable in WebPoller
-    public static ArrayList<ScheduledExecutorService> executorThreads = new ArrayList<ScheduledExecutorService>();
+    public static ArrayList<ScheduledExecutorService> executorThreads = new ArrayList<>();
 
     //keep track of TrackerTiles
-    public static ArrayList<TrackerTile> trackerTiles = new ArrayList<TrackerTile>();
+    public static ArrayList<TrackerTile> trackerTiles = new ArrayList<>();
 
     //instantiate systemLog systemLogHelper
     private SystemLog systemLog = new SystemLog();
