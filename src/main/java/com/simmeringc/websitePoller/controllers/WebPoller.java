@@ -45,8 +45,8 @@ public class WebPoller implements Runnable {
 
     public void run() {
         try {
-            ExecutorService executer = Executors.newSingleThreadExecutor();
-            Future getHtml = executer.submit(new WebRequester(url));
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future getHtml = executor.submit(new WebRequester(url));
             newHtml = getHtml.get().toString();
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -31,7 +31,7 @@ public class MainWindow {
     public static int trackerNumber = 0;
 
     //keep track of threads that are executing runnable in WebPoller
-    public static ArrayList<ScheduledExecutorService> executerThreads = new ArrayList<ScheduledExecutorService>();
+    public static ArrayList<ScheduledExecutorService> executorThreads = new ArrayList<ScheduledExecutorService>();
 
     //keep track of TrackerTiles
     public static ArrayList<TrackerTile> trackerTiles = new ArrayList<TrackerTile>();
@@ -212,7 +212,7 @@ public class MainWindow {
         WebPoller pollerRunnable = new WebPoller(getUrlFormText(), getEmailFormText(), oldHtml, thresholdPercent, trackerNumber);
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executerThreads.add(executor);
+        executorThreads.add(executor);
         executor.scheduleAtFixedRate(pollerRunnable, 0, interval, TimeUnit.SECONDS);
 
         return pollerRunnable;
@@ -256,7 +256,7 @@ public class MainWindow {
     //inner-class: show active threads in system log
     class ShowThreadsListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            for (ScheduledExecutorService thread : executerThreads) {
+            for (ScheduledExecutorService thread : executorThreads) {
                 systemLogShowThread(thread);
             }
         }
@@ -326,12 +326,15 @@ public class MainWindow {
     class EnterButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             String url = getUrlFormText();
+            String email = getEmailFormText();
+            String threshold = getThresholdFormText();
+            String interval = getPollIntervalFormText();
 
             try {
-                verifyInput(url, getEmailFormText(), getThresholdFormText(), getPollIntervalFormText());
+                verifyInput(url, email, threshold, interval);
                 try {
-                    ExecutorService executer = Executors.newSingleThreadExecutor();
-                    Future getHtml = executer.submit(new WebRequester(url));
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    Future getHtml = executor.submit(new WebRequester(url));
                     oldHtml = getHtml.get().toString();
                     addTrackerTile();
                     systemLogHtmlGetSuccessful(url);

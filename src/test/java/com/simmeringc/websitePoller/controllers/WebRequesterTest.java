@@ -65,8 +65,8 @@ public class WebRequesterTest {
                 " </body>\n" +
                 "</html>";
 
-        ExecutorService executer = Executors.newFixedThreadPool(1);
-        Future getHtml = executer.submit(new WebRequester(url));
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Future getHtml = executor.submit(new WebRequester(url));
         String retrievedHtml = getHtml.get().toString();
 
         assertEquals(html, retrievedHtml);

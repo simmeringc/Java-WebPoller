@@ -8,7 +8,7 @@ package com.simmeringc.websitePoller.views;
 
 import com.simmeringc.websitePoller.controllers.WebPoller;
 
-import static com.simmeringc.websitePoller.views.MainWindow.executerThreads;
+import static com.simmeringc.websitePoller.views.MainWindow.executorThreads;
 import static com.simmeringc.websitePoller.views.MainWindow.getImage;
 import static com.simmeringc.websitePoller.views.SystemLog.*;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
@@ -197,7 +197,7 @@ public class TrackerTile extends JPanel {
     //inner-class: terminates tracker-thread and removes TrackerTile
     class TerminateButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            executerThreads.get(trackerNumber).shutdown();
+            executorThreads.get(trackerNumber).shutdown();
             trackerPanel.remove(jSeparator);
             trackerPanel.remove(trackerTile);
             decrementTrackerPanelCounter();
