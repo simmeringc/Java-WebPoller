@@ -1,7 +1,7 @@
 /**
  * Created by Conner on 4/28/17.
  *
- * master polling thread, calls LetterPairSimilarity to
+ * master polling thread, calls AddRemoveSimilarity to
  * get website changes, sends emails, only sends 1 email
  * and newHtml does not replace oldHtml on threshold clear
  */
@@ -11,7 +11,7 @@ package com.simmeringc.websitePoller.controllers;
 import com.simmeringc.websitePoller.views.TrackerTile;
 
 import static com.simmeringc.websitePoller.controllers.GoogleMail.sendMail;
-import static com.simmeringc.websitePoller.controllers.LetterPairSimilarity.compareStrings;
+import static com.simmeringc.websitePoller.controllers.AddRemoveSimilarity.compareStrings;
 import static com.simmeringc.websitePoller.views.MainWindow.trackerTiles;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogDiffDetected;
 
