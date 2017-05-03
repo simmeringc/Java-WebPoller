@@ -1,7 +1,7 @@
 /**
  * Created by Conner on 4/28/17.
  *
- * master polling thread, calls LetterPairSimilarity to
+ * master polling thread, calls EditPercent to
  * get website changes, sends emails, only sends 1 email
  * and newHtml does not replace oldHtml on threshold clear
  */
@@ -10,8 +10,8 @@ package com.simmeringc.websitePoller.controllers;
 
 import com.simmeringc.websitePoller.views.TrackerTile;
 
+import static com.simmeringc.websitePoller.controllers.EditPercent.getSimilarity;
 import static com.simmeringc.websitePoller.controllers.GoogleMail.sendMail;
-import static com.simmeringc.websitePoller.controllers.LetterPairSimilarity.compareStrings;
 import static com.simmeringc.websitePoller.views.MainWindow.trackerTiles;
 import static com.simmeringc.websitePoller.views.SystemLog.systemLogDiffDetected;
 
@@ -51,7 +51,8 @@ public class WebPoller implements Runnable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        percentSimilarity = compareStrings(oldHtml, newHtml) * 100;
+        percentSimilarity = getSimilarity(oldHtml, newHtml) * 100;
+        System.out.println("Ending");
         setPercentDiff(percentSimilarity);
         trackerTile = trackerTiles.get(trackerNumber);
         if (trackerTile.emailAlertsEnabled() && percentDiff >= thresholdPercent && emailNotSent) {
