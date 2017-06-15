@@ -16,7 +16,7 @@ mvn clean install
 
 to download dependencies and create a JAR in the '/target/' folder.
 
-Maven should specify dependencies, classpaths and Java 1.8 to your IDE, if not, contact connersimmering@gmail.com.
+Maven should specify dependencies, classpaths and Java 1.8 to your IDE.
 
 The application can be built and run in your IDE or from the generated JAR:
 
