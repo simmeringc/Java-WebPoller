@@ -25,7 +25,7 @@ public class GoogleMail {
     public static void sendMail(String url, String email, Double threshold) {
 
         final String username = "simmeringcwebpoller@gmail.com";
-        final String password = "4BHW8P8tS72h";
+        final String password = "4BHW8P8tS72h"; //I know.
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
