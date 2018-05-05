@@ -1,8 +1,8 @@
 # Simmeringc WebPoller
 
-This **WebPoller** is a Java application that lets users track live webpage changes.
+**java-webPoller** is a Java application that lets users track live webpage changes.
 
-The application enables users to see the percentage change of a website since the time of tracking, and view a diff of the updated content.
+The application lets users monitor the percentage change of a website since the time of tracking, and view a diff of the updated content.
 
 An email is sent to the specified address if the website has changed enough to trigger the change-threshold set by the user.
 
@@ -26,9 +26,7 @@ The application can be built and run in your IDE or from the generated JAR:
 
 Access the Menu Toolbar and enter your email to quickly test the applications features. Note that most Reddit links do not currently work.
 
-![debug_menu](resources/readmeImages/debug_menu.png)
-
-## Unit Testing: 
+![debug_menu](resources/readmeImages/debug_menu.png) 
 
 ## HTML Filter Policy:
 
