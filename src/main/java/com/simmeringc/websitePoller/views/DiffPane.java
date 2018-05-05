@@ -1,5 +1,5 @@
 /**
- * Created by Conner on 4/30/17.
+ * Created by simmeringc on 4/30/17.
  *
  * new frame thread displays comprehensive diff between webpage changes
  */

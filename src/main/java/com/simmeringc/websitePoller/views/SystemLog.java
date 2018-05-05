@@ -1,5 +1,5 @@
 /**
- * Created by Conner on 4/28/17.
+ * Created by simmeringc on 4/28/17.
  *
  * dispatches messages to the MainWindow systemLog
  */

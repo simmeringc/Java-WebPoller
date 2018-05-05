@@ -1,5 +1,5 @@
 /**
- * Created by Conner on 4/28/17.
+ * Created by simmeringc on 4/28/17.
  */
 
 package com.simmeringc.websitePoller.controllers;
@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 public class WebRequesterTest {
 
     @org.junit.Test
-    public void testgetHtml() throws Exception {
+    public void getHtmlTest() throws Exception {
 
         String url = "http://example.org/";
 

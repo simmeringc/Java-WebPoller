@@ -1,5 +1,5 @@
 /**
- * Created by Conner on 4/28/17.
+ * Created by simmeringc on 4/28/17.
  *
  * https://www.mkyong.com/java/javamail-api-sending-email-via-gmail-smtp-example/
  * insecure TLS/SMTP mailer

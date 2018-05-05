@@ -1,5 +1,5 @@
 /**
- * Created by Conner on 4/28/17.
+ * Created by simmeringc on 4/28/17.
  *
  * main thread and parent GUI
  */
@@ -74,12 +74,6 @@ public class MainWindow {
         showThreads = new JMenuItem("Show threads");
         showThreads.addActionListener(new ShowThreadsListener());
 
-        redditNewFill = new JMenuItem("https://www.reddit.com/new/");
-        redditNewFill.addActionListener(new RedditNewFillListener());
-
-        redditCSCareerQuestionsFill = new JMenuItem("https://www.reddit.com/r/cscareerquestions/new");
-        redditCSCareerQuestionsFill.addActionListener(new RedditCSCareerQuestionsFillListener());
-
         stackOverflowHot = new JMenuItem("https://stackoverflow.com/?tab=hot");
         stackOverflowHot.addActionListener(new StackOverflowHotListener());
 
@@ -92,8 +86,6 @@ public class MainWindow {
         gitHubRawText = new JMenuItem("https://github.com/simmeringc/archive-simmeringc.github.io");
         gitHubRawText.addActionListener(new GitHubRawTextListener());
 
-        dummyData.add(redditNewFill);
-        dummyData.add(redditCSCareerQuestionsFill);
         dummyData.add(stackOverflowHot);
         dummyData.add(hackerNewsNew);
         dummyData.add(googleFill);
@@ -205,7 +197,7 @@ public class MainWindow {
         }
     }
 
-    //create new thread for intervaled content analysis
+    //create new thread for interval content analysis
     public WebPoller createPoller() {
         double thresholdPercent = Double.parseDouble(getThresholdFormText());
         long interval = Long.parseLong(getPollIntervalFormText());
@@ -263,26 +255,6 @@ public class MainWindow {
     }
 
     //inner-class: input quick test data
-    class RedditNewFillListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            urlForm.setText("https://www.reddit.com/new/");
-            emailForm.setText("connersimmering@gmail.com");
-            thresholdForm.setText("5");
-            pollIntervalForm.setText("5");
-        }
-    }
-
-    //inner-class: input quick test data
-    class RedditCSCareerQuestionsFillListener implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            urlForm.setText("https://www.reddit.com/r/cscareerquestions/new/");
-            emailForm.setText("connersimmering@gmail.com");
-            thresholdForm.setText("5");
-            pollIntervalForm.setText("5");
-        }
-    }
-
-    //inner-class: input quick test data
     class StackOverflowHotListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             urlForm.setText("https://stackoverflow.com/?tab=hot");
@@ -329,7 +301,6 @@ public class MainWindow {
             String email = getEmailFormText();
             String threshold = getThresholdFormText();
             String interval = getPollIntervalFormText();
-
             try {
                 verifyInput(url, email, threshold, interval);
                 try {

@@ -1,5 +1,5 @@
 /**
- * Created by Conner on 4/30/17.
+ * Created by simmeringc on 4/30/17.
  *
  * https://github.com/OWASP/java-html-sanitizer
  * contains policies for filtering HTML get()
@@ -20,7 +20,11 @@ public class HtmlSanitizer {
                 .allowTextIn("body", "div", "a", "p", "div", "i", "b", "em", "blockquote", "tt", "strong",
                         "br", "ul", "ol", "li", "iframe", "textarea")
                 .toFactory();
+        //string cleaning, sanitize with policy, uglify to remove newlines and leading/trailing whitespace
         String filteredHtml = policy.sanitize(str);
+        filteredHtml = filteredHtml.replaceAll("^\\s+","");
+        filteredHtml = filteredHtml.replaceAll("\\s+$","");
+        filteredHtml = filteredHtml.replaceAll("\\n+","");
         return filteredHtml;
     }
 }
