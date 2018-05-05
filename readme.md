@@ -16,7 +16,7 @@ mvn clean install
 
 to download dependencies and create a JAR in the '/target/' folder.
 
-Maven should specify dependencies, classpaths and Java 1.8 to your IDE, if not, contact connersimmering@gmail.com.
+Maven should specify dependencies, classpaths and Java 1.8 to your IDE.
 
 The application can be built and run in your IDE or from the generated JAR:
 
@@ -33,6 +33,7 @@ Access the Menu Toolbar and enter your email to quickly test the applications fe
 ## HTML Filter Policy:
 
 Visit ‘/controllers/HtmlSanitizer.jar’ to view the policies for which a diff is calculated. The application can be extended to monitor specific HTML tags or even tag Id’s.
+<<<<<<< HEAD
 
 ## String Similarity:
 
@@ -46,3 +47,5 @@ The WebPoller computes the difference in HTML page similarity by finding out how
 
 This application purposely pollutes the static namespace in order to demonstrate statics and Java multithreading. 
 
+=======
+>>>>>>> e9bfeac58bcac9ecc9f5d6b52693cf9bad718b84
