@@ -26,9 +26,9 @@ public class DiffPane extends JFrame implements Runnable {
         setProperty("apple.laf.useScreenMenuBar", "true");
 
         //set the name of the application menu item
-        setProperty("apple.awt.application.name", "Simmeringc WebPoller Diff");
+        setProperty("apple.awt.application.name", "Java WebPoller Diff");
 
-        setTitle("Simmeringc WebPoller Diff: " + url);
+        setTitle("Java WebPoller Diff: " + url);
     }
 
     public void run() {

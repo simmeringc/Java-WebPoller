@@ -1,7 +1,7 @@
 /**
  * Created by simmeringc on 4/28/17.
  *
- * main thread and parent GUI
+ * Main thread and parent GUI.
  */
 
 package com.simmeringc.websitePoller.views;
@@ -55,7 +55,7 @@ public class MainWindow {
         System.setProperty("apple.laf.useScreenMenuBar", "True");
 
         //set the name of the application menu item
-        System.setProperty("apple.awt.application.name", "Simmeringc WebPoller");
+        System.setProperty("apple.awt.application.name", "Java WebPoller");
 
         //build the GUI
         new MainWindow().buildGUI();
@@ -116,6 +116,7 @@ public class MainWindow {
         emailFormLabel = new JLabel("Email:");
         emailForm = new JTextField(12);
         emailForm.addKeyListener(new FormListener());
+        emailForm.setText("simmeringcwebpoller@gmail.com");
 
         //component: change-threshold input form
         thresholdFormLabel = new JLabel("Threshold (%):");
@@ -157,7 +158,7 @@ public class MainWindow {
         //append panels to frame - frame parameters
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(809, 601);
-        frame.setTitle("Simmeringc WebPoller");
+        frame.setTitle("Java WebPoller");
         frame.setResizable(false);
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(BorderLayout.SOUTH, inputPanel);
@@ -258,7 +259,6 @@ public class MainWindow {
     class StackOverflowHotListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             urlForm.setText("https://stackoverflow.com/?tab=hot");
-            emailForm.setText("connersimmering@gmail.com");
             thresholdForm.setText("5");
             pollIntervalForm.setText("5");
         }
@@ -268,7 +268,6 @@ public class MainWindow {
     class HackerNewsNewListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             urlForm.setText("https://news.ycombinator.com/newest");
-            emailForm.setText("connersimmering@gmail.com");
             thresholdForm.setText("5");
             pollIntervalForm.setText("5");
         }
@@ -278,7 +277,6 @@ public class MainWindow {
     class GoogleFillListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             urlForm.setText("https://www.google.com");
-            emailForm.setText("connersimmering@gmail.com");
             thresholdForm.setText("5");
             pollIntervalForm.setText("5");
         }
@@ -288,7 +286,6 @@ public class MainWindow {
     class GitHubRawTextListener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
             urlForm.setText("https://github.com/simmeringc/archive-simmeringc.github.io");
-            emailForm.setText("connersimmering@gmail.com");
             thresholdForm.setText("5");
             pollIntervalForm.setText("5");
         }
