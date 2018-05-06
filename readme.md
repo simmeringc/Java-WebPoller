@@ -30,7 +30,7 @@ Visit ‘/controllers/HtmlSanitizer.jar’ to view the policies for which a diff
 
 ## String Similarity:
 
-The WebPoller computes the difference in HTML page similarity by finding out how many adjacent character pairs are contained in both HTML body strings. This is done by implementing a variation of the Dice's Coefficient algorithm:
+The WebPoller computes the difference in HTML page similarity by finding out how many adjacent character pairs are contained in both HTML body strings. This is done by implementing a variation of the Dice's Coefficient algorithm which expresses a percent range [0,1] of similarity:
 
 ![similarity_algorithm](readmeImages/similarity_algorithm.png)
 
