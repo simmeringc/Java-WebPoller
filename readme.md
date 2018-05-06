@@ -6,7 +6,7 @@ The application lets users monitor the percentage change of a website since the 
 
 An email is sent to the specified address if the website has changed enough to trigger the change-threshold set by the user.
 
-## Build and Run
+## Build and Run:
 
 The application is built with Maven. Clone and execute:
 
