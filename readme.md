@@ -22,7 +22,7 @@ The application can be built and run from the MainWindow class or from the gener
 
 Access the Menu Toolbar and enter your email to quickly test the applications features. Note that most Reddit links do not currently work.
 
-![debug_menu](readmeImages/debug_menu.png) 
+![debug_menu](readmeImages/debug_menu_censored.png) 
 
 ## HTML Filter Policy:
 
